@@ -164,7 +164,7 @@ const StudentList = () => {
               <tbody>
                 {filteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className={styles['no-data']}>
+                    <td colSpan="7" style={{ textAlign: 'center' }}>
                       No students found.
                     </td>
                   </tr>
