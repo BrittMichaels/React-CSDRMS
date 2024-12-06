@@ -142,6 +142,7 @@ const Navigation = ({ loggedInUser }) => {
           onClose={handleModalClose} 
           notifications={notifications} 
           loggedInUser={loggedInUser}
+          setNotifications={setNotifications}
           refreshNotifications={() => setUnviewedCount(0)} // Refresh unviewed count
         />
       )}
