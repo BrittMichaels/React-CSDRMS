@@ -33,7 +33,7 @@ const LoginPage = () => {
               navigate('/record', { state: { userObject } }); // Redirect for userType 5
               break;
             case 6:
-              navigate('/dashboard', { state: { userObject } }); // Redirect for userType 5
+              navigate('/dashboard', { state: { userObject } }); // Redirect for userType 6
               break;  
             default:
               navigate('/');
@@ -64,14 +64,13 @@ const LoginPage = () => {
   
       const { userType, userObject } = response.data;
       login(response.data); // Update context
-  
-      // Only log time if the userType is 3
      
-        const loginTime = new Date().toISOString(); // Get current time in ISO format
-        await axios.post('http://localhost:8080/time-log/login', {
-          userId: response.data.userId, // Assuming `userObject` contains `uid`
-          loginTime: loginTime,
-        });
+      // Only log time if the userType is 3
+      const loginTime = new Date().toISOString(); // Get current time in ISO format
+      await axios.post('http://localhost:8080/time-log/login', {
+        userId: response.data.userId, // Assuming userObject contains uid
+        loginTime: loginTime,
+      });
   
       // Redirect based on userType
       switch (userType) {
@@ -97,7 +96,11 @@ const LoginPage = () => {
       alert('Incorrect Username or Password');
     }
   };
-  
+
+  const handleUsernameChange = (e) => {
+    const updatedUsername = e.target.value.replace(/\s+/g, ''); // Remove spaces
+    setUsername(updatedUsername);
+  };
 
   return (
     <div className={styles.loginbg}>
@@ -113,7 +116,7 @@ const LoginPage = () => {
                 className={styles.form_style}
                 type="user"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleUsernameChange}
                 required
               />
             </div>
