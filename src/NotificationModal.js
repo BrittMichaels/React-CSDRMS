@@ -25,7 +25,6 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
     markNotificationsAsViewed();
   }, [loggedInUser, refreshNotifications]);
 
-
   const handleDeleteNotification = async (userNotificationId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this notification?');
     if (confirmDelete) {
@@ -43,8 +42,6 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
       console.log('Notification deletion canceled');
     }
   };
-  
-  
 
   // Handle viewing a record in modal
   const handleViewRecord = (record) => {

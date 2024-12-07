@@ -24,9 +24,7 @@ const Navigation = ({ loggedInUser }) => {
   const location = useLocation(); // To get the current URL path
   const [unviewedCount, setUnviewedCount] = useState(0); // To store count of unviewed notifications
   const [notifications, setNotifications] = useState([]); // All notifications for display
-  
-  const [showNotificationModal, setShowNotificationModal] = useState(false); // State to control modal visibility
-  
+  const [notificationToggle, setNotificationToggle] = useState(false);
 
   const createSidebarLink = (to, text, IconComponent) => {
     const isActive = location.pathname === to; // Check if the link is active
@@ -41,7 +39,6 @@ const Navigation = ({ loggedInUser }) => {
       </Link>
     );
   };
-
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -66,15 +63,13 @@ const Navigation = ({ loggedInUser }) => {
     fetchNotifications();
   }, [userId]);
   
-
-  // Handle opening the notification modal
-  const handleNotificationClick = () => {
-    setShowNotificationModal(true);
-  };
+  const handleToggleNotification = () =>{
+    if(notificationToggle) setNotificationToggle(false); else setNotificationToggle(true);
+  }
 
   // Handle closing the notification modal
   const handleModalClose = () => {
-    setShowNotificationModal(false);
+    setNotificationToggle(false);
   };
 
   return (
@@ -83,10 +78,8 @@ const Navigation = ({ loggedInUser }) => {
       {loggedInUser.userType !== 5 && (
         <div className={navStyles.sidenav}>
           <div className={navStyles['sidenav-title']}>MENU</div>
-          {/* Render sidebar links */}
-          <>
-          
-            {/* SSO - usertype 1 */}
+          {/* Render sidebar links */
+           /* SSO - usertype 1 */}
             {loggedInUser.userType === 1 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/record", "Record", PostAddIcon)}
@@ -112,10 +105,8 @@ const Navigation = ({ loggedInUser }) => {
             {/* Guidance - usertype 6 */}
             {loggedInUser.userType === 6 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 6 && createSidebarLink("/record", "Complaint", PostAddIcon)}
-          </>
         </div>
       )}
-
 
       {/* Header */}
       <header className={navStyles.header}>
@@ -127,7 +118,7 @@ const Navigation = ({ loggedInUser }) => {
         <div className={navStyles['header-wrapper']}>
           {/* Notification Icon */}
           {loggedInUser?.userType !== 4 && (
-            <IconButton onClick={handleNotificationClick}>
+            <IconButton onClick={handleToggleNotification}>
               <NotificationsActiveIcon className={navStyles['header-icon']} />
               {unviewedCount > 0 && <span className={navStyles.badge}>{unviewedCount}</span>}
             </IconButton>
@@ -137,7 +128,7 @@ const Navigation = ({ loggedInUser }) => {
       </header>
 
       {/* Render Notification Modal */}
-      {showNotificationModal && (
+      {notificationToggle && (
         <NotificationModal 
           onClose={handleModalClose} 
           notifications={notifications} 
