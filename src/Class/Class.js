@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
+
 import axios from "axios";
 import styles from './Class.module.css';
-import navStyles from '../Navigation.module.css';
-import Navigation from '../Navigation';
+import navStyles from '../Components/Navigation.module.css';
+import Navigation from '../Components/Navigation';
+
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';

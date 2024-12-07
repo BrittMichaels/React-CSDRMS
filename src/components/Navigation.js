@@ -4,9 +4,9 @@ import axios from 'axios';
 
 import navStyles from './Navigation.module.css'; // CSS for Navigation
 import NotificationModal from './NotificationModal'; // Import NotificationModal
-import MenuPopupState from './Components/MenuPopupState';
+import MenuPopupState from './MenuPopupState';
 
-import JHSLogo from './LoginPage/image-sso-yellow.png';
+import JHSLogo from '../LoginPage/image-sso-yellow.png';
 
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';

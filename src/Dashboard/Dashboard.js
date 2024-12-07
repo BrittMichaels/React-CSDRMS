@@ -17,8 +17,8 @@ import {
 } from 'chart.js';
 
 import styles from '../Dashboard/Dashboard.module.css';
-import navStyles from '../Navigation.module.css'; 
-import Navigation from '../Navigation';
+import navStyles from '../Components/Navigation.module.css'; 
+import Navigation from '../Components/Navigation';
 import tableStyles from '../GlobalTable.module.css';
 import buttonStyles from '../GlobalButton.module.css'
 

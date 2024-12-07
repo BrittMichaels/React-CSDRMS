@@ -52,6 +52,12 @@
     width: 220px; /* Adjust this value as needed */
 }
 
+/* Increase the width of the second column */
+.student-list-table th:nth-child(6), 
+.student-list-table td:nth-child(6) {
+    width: 220px; /* Adjust this value as needed */
+}
+
 .student-list-table td {
     cursor: pointer;
     word-wrap: break-word; /* Prevent long text like emails from overflowing */
