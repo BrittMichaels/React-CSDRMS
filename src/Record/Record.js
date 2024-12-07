@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import styles from './Record.module.css';
-import navStyles from '../Navigation.module.css';
+import navStyles from '../Components/Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
-import Navigation from '../Navigation';
+import Navigation from '../Components/Navigation';
 
 import AddRecordModal from './AddRecordModal';
 import RecordStudentEditModal from './EditRecordModal';

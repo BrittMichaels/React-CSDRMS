@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../Record/Record.module.css'; // Importing CSS module
+import styles from './Student.module.css'; // Importing CSS module
 import axios from 'axios';
 
-const RecordFilter = ({
+const StudentFilter = ({
   schoolYears,
   loggedInUser,
   selectedSchoolYear,
@@ -153,4 +153,4 @@ const RecordFilter = ({
   );
 };
 
-export default RecordFilter;
+export default StudentFilter;

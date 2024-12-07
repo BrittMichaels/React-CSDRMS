@@ -9,7 +9,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Profile ic
 import IconButton from '@mui/material/IconButton'; // Profile icon
 
 import UpdateAccountModal from '../UserManagement/UpdateAccountModal'; // Import the UpdateAccountModal
-import navStyles from '../Navigation.module.css'; // Import the CSS module
+import navStyles from './Navigation.module.css'; // Import the CSS module
 
 const MenuPopupState = () => {
     const authToken = localStorage.getItem('authToken');

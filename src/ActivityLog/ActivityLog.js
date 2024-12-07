@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import Navigation from '../Navigation';
-import navStyles from '../Navigation.module.css'; 
+import Navigation from '../Components/Navigation';
+import navStyles from '../Components/Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css';
 import tableStyles from '../GlobalTable.module.css';
 import styles from './ActivityLog.module.css';
@@ -27,6 +27,20 @@ const ActivityLog = () => {
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6; // Number of items per page
+
+    useEffect(() => {
+        if (!loggedInUser) return;
+    
+        console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+    
+        const userTypeTitles = {
+            1: 'SSO',
+            4: 'Admin',
+        };
+    
+        const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+        document.title = `${userTypeTitle} | Activity Log`;
+        }, []);
 
     useEffect(() => {
         const fetchActivityLogs = async () => {

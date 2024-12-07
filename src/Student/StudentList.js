@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styles from './StudentList.module.css'; // Updated CSS for table container
-import navStyles from '../Navigation.module.css'; // Assuming this is where your nav styles are stored
+import navStyles from '../Components/Navigation.module.css'; // Assuming this is where your nav styles are stored
 import buttonStyles from '../GlobalButton.module.css';
 
+import Navigation from '../Components/Navigation';
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import EditStudentModal from './EditStudentModal';
@@ -16,7 +17,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 
-import Navigation from '../Navigation';
 
 const StudentList = () => {
   const loggedInUser = JSON.parse(localStorage.getItem('authToken'));
@@ -105,6 +105,20 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
     fetchSchoolYears();
     fetchGradesAndSections();
   }, [fetchGradesAndSections]);
+
+  useEffect(() => {
+    if (!loggedInUser) return;
+
+    console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+
+    const userTypeTitles = {
+        1: 'SSO',
+        4: 'Admin',
+    };
+
+    const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+    document.title = `${userTypeTitle} | Student List`;
+    }, []);
 
   // Filter students based on search query, grade, and section
   const filteredStudents = students.filter((student) => {

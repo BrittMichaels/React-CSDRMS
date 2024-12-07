@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-import navStyles from "../Navigation.module.css"; // Import CSS module for Navigation
+import navStyles from "../Components/Navigation.module.css"; // Import CSS module for Navigation
 import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS module
 import formStyles from "../GlobalForm.module.css";
 import styles from "./Suspension.module.css"; // Import GlobalTable CSS module
 
-import Navigation from '../Navigation'; // Import the Navigation component
+import Navigation from '../Components/Navigation';
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
 
@@ -17,7 +17,7 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 import SearchIcon from '@mui/icons-material/Search';
 
-const ViewSuspensions = () => {
+const Suspensions = () => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
   const [suspensions, setSuspensions] = useState([]);
@@ -300,4 +300,4 @@ const ViewSuspensions = () => {
   );
 };
 
-export default ViewSuspensions;
+export default Suspensions;

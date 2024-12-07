@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './NotificationModal.module.css';
-import ViewRecord from './Record/ViewRecordModal'; // Import ViewRecord component
+import ViewRecord from '../Record/ViewRecordModal'; // Import ViewRecord component
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const NotificationModal = ({ onClose, loggedInUser, notifications, setNotifications, refreshNotifications }) => {
@@ -72,18 +72,20 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
                   className={`${styles['notification-modal-list-item']} ${styles['clickable']}`}
                   onClick={() => handleViewRecord(notification.notification.record)}
                 >
-                  <DeleteIcon
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent the modal from opening when the delete button is clicked
-                      handleDeleteNotification(notification.userNotificationId);
-                    }}
-                    style={{
-                      color: '#8A252C'
-                    }}
-                  />
                   <strong>{notification.notification.message}</strong>
                   <br />
-                  <small>Click to view details.</small>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <small>Click to view details.</small>
+                    <DeleteIcon
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent the modal from opening when the delete button is clicked
+                        handleDeleteNotification(notification.userNotificationId);
+                      }}
+                      style={{
+                        color: '#8A252C'
+                      }}
+                    />
+                  </div>
                 </li>
               ))}
           </ul>

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import styles from './UserManagement.module.css';
-import navStyles from '../Navigation.module.css';
+import navStyles from '../Components/Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 
-import Navigation from '../Navigation'; // Importing the updated Navigation component
+import Navigation from '../Components/Navigation';
 import AddUserModal from './AddUserModal';  
 import ConfirmationModal from './ConfirmationModal';  
 import UpdateAccountModal from './UpdateAccountModal'; 
