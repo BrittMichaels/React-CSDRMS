@@ -8,6 +8,7 @@ import Navigation from '../Components/Navigation';
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import EditStudentModal from './EditStudentModal';
+import Loader from '../Loader';
 
 import AddStudentIcon from '@mui/icons-material/PersonAdd';
 import ImportIcon from '@mui/icons-material/FileDownload';
@@ -26,7 +27,7 @@ const StudentList = () => {
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
-  const [studentsPerPage] = useState(10); // Limit number of students per page
+  const [studentsPerPage] = useState(7); // Limit number of students per page
   const [searchQuery, setSearchQuery] = useState(''); // Search query state
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -172,20 +173,6 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
       <div className={navStyles.content}>
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Student List</h2>
-        </div>
-
-        <div className={styles['separator']}>
-          <div className={styles['search-container']}>
-            <SearchIcon className={styles['search-icon']} />
-            <input
-              type="search"
-              className={styles['search-input']}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search"
-            />
-          </div>
-
           <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
             <button
               onClick={() => setShowAddStudentModal(true)}
@@ -204,11 +191,10 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
             </button>
           </div>
         </div>
-
-        <div className={styles['filters']}>
-        <div className={styles['filter-item']}>
-          <label>School Year</label>
-          <select
+        
+        <div className={styles['filter-container']}>
+          <label>Filter by: 
+            <select
               value={selectedSchoolYear}
               onChange={(e) => setSelectedSchoolYear(e.target.value)}
             >
@@ -220,11 +206,7 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
               ))}
             </select>
 
-        </div>
-
-          {/* Grade Filter */}
-          <div className={styles['filter-item']}>
-            <label>Grade</label>
+            {/* Grade Filter */}
             <select
               value={selectedGrade}
               onChange={(e) => {
@@ -239,30 +221,40 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
                 </option>
               ))}
             </select>
-          </div>
 
-          {/* Section Filter (visible only after grade is selected) */}
-          {selectedGrade && (
-            <div className={styles['filter-item']}>
-              <label>Section</label>
-              <select
-                value={selectedSection}
-                onChange={(e) => setSelectedSection(e.target.value)}
-              >
-                <option value="">Select Section</option>
-                {sections.map((section) => (
-                  <option key={section} value={section}>
-                    {section.toUpperCase()}
-                  </option>
-                ))}
-              </select>
+            {/* Section Filter (visible only after grade is selected) */}
+            {selectedGrade && (
+                <select
+                  value={selectedSection}
+                  onChange={(e) => setSelectedSection(e.target.value)}
+                >
+                  <option value="">Select Section</option>
+                  {sections.map((section) => (
+                    <option key={section} value={section}>
+                      {section.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+            )}
+          </label>
+
+          <div>
+            <div className={styles['search-container']}>
+              <SearchIcon className={styles['search-icon']} />
+              <input
+                type="search"
+                className={styles['search-input']}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search"
+              />
             </div>
-          )}
+          </div>
         </div>
 
         <div className={styles['student-list-table-container']}>
           {isLoading ? (
-            <p>Loading students...</p>
+            <Loader />
           ) : error ? (
             <p className={styles['error-message']}>{error}</p>
           ) : (

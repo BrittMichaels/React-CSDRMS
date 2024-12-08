@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from './Class.module.css';
 import navStyles from '../Components/Navigation.module.css';
+import buttonStyles from '../GlobalButton.module.css';
 import Navigation from '../Components/Navigation';
 
 import Box from "@mui/material/Box";
@@ -22,6 +23,8 @@ const Class = () => {
     const [newGrade, setNewGrade] = useState(null);
     const [newSection, setNewSection] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedGradeFilter, setSelectedGradeFilter] = useState("");
+    const [selectedSectionFilter, setSelectedSectionFilter] = useState("");
 
     const [modalType, setModalType] = useState("Class"); // Class or School Year
     const [showModal, setShowModal] = useState(false);
@@ -171,12 +174,16 @@ const Class = () => {
     };
 
     const handleSearch = (e) => setSearchTerm(e.target.value);
+    const handleGradeFilter = (e) => setSelectedGradeFilter(e.target.value);
+    const handleSectionFilter = (e) => setSelectedSectionFilter(e.target.value);
 
     const filteredClasses = classes
-    .filter(classItem =>
-        classItem.grade.toString().includes(searchTerm) ||
+    .filter(classItem => 
+        (classItem.grade.toString().includes(searchTerm) || 
         classItem.section?.toLowerCase().includes(searchTerm) ||
-        (classItem.schoolYear && classItem.schoolYear.toLowerCase().includes(searchTerm))
+        (classItem.schoolYear && classItem.schoolYear.toLowerCase().includes(searchTerm))) &&
+        (selectedGradeFilter ? classItem.grade === Number(selectedGradeFilter) : true) &&
+        (selectedSectionFilter ? classItem.section?.toLowerCase().includes(selectedSectionFilter.toLowerCase()) : true)
     )
     .sort((a, b) => a.grade - b.grade);
 
@@ -191,26 +198,44 @@ const Class = () => {
             <div className={navStyles.content}>
                 <div className={navStyles.TitleContainer}>
                     <h2 className={navStyles['h1-title']}>Class Management</h2>
+
+                    <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
+                        <button 
+                            onClick={handleOpenModal} 
+                            className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+                        >
+                            <AddIcon />Add Class || School Year
+                        </button>
+                    </div>
                 </div>
 
-                <div className={styles.separator}>
-                    <div className={styles['search-container']}>
-                        <SearchIcon className={styles['search-icon']} />
-                        <input
-                            type="search"
-                            placeholder="Search by Grade, Section or S.Y."
-                            value={searchTerm}
-                            onChange={handleSearch}
-                            className={styles['search-input']}
-                        />
-                    </div>
+                <div className={styles['filter-container']}>
+                    <label>
+                        Filter by Grade:
+                        <select
+                            value={selectedGradeFilter}
+                            onChange={handleGradeFilter}
+                        >
+                            <option value="">Select Grade</option>
+                            <option value={7}>Grade 7</option>
+                            <option value={8}>Grade 8</option>
+                            <option value={9}>Grade 9</option>
+                            <option value={10}>Grade 10</option>
+                        </select>
+                    </label>
 
-                    <button 
-                        onClick={handleOpenModal} 
-                        className={`${styles['action-btn']} ${styles['maroon-button']}`}
-                    >
-                        <AddIcon />Add Class || School Year
-                    </button>
+                    <div>
+                        <div className={styles['search-container']}>
+                            <SearchIcon className={styles['search-icon']} />
+                            <input
+                                type="search"
+                                placeholder="Search by Section or S.Y."
+                                value={searchTerm}
+                                onChange={handleSearch}
+                                className={styles['search-input']}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className={styles.divide}>
@@ -350,9 +375,9 @@ const Class = () => {
                                 </div>
                             )}
                         </div>
-                        <div className={styles.buttonGroup}>
-                            <button onClick={handleSubmit} className={`${styles['action-btn']} ${styles['button']}`}>Add </button>
-                            <button onClick={handleCloseModal} className={`${styles['action-btn']} ${styles['buttonCancel']}`}>Cancel</button>
+                        <div className={buttonStyles['button-group']}>
+                            <button onClick={handleSubmit} className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>Add </button>
+                            <button onClick={handleCloseModal} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>Cancel</button>
                         </div>
                     </Box>
                 </Modal>

@@ -132,21 +132,6 @@ const Suspensions = () => {
         <div className={navStyles.TitleContainer}>
             <h2 className={navStyles['h1-title']}>Suspension List</h2>
         </div>  
-
-        <div className={styles['separator']}>
-          <div className={styles['search-container']}>
-            <SearchIcon className={styles['search-icon']} />
-            <input
-              id="searchQuery"
-              type="text"
-              className={styles["search-input"]}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name or ID"
-            />
-          </div>   
-        </div>
-     
         
         {loading && <p>Loading suspensions...</p>}
         {error && <p>{error}</p>}
@@ -165,6 +150,20 @@ const Suspensions = () => {
                   <option value="unapproved">Not Approved</option>
                 </select>
               </label>
+            
+              <div>
+                <div className={styles['search-container']}>
+                  <SearchIcon className={styles['search-icon']} />
+                  <input
+                    id="searchQuery"
+                    type="text"
+                    className={styles["search-input"]}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by Name or ID"
+                  />
+                </div>   
+              </div>
             </div>
 
             <div className={tableStyles['table-container']}>
