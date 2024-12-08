@@ -152,7 +152,7 @@ const ActivityLog = () => {
                                 <th>Action</th>
                                 <th>Description</th>
                                 <th>Timestamp</th>
-                                <th className={styles['icon-cell']}>View</th>
+                                <th className={styles['icon-cell']} style={{borderRight: '0.5px solid #8A252C'}}>View</th>
                             </tr>
                         </thead>
                         <tbody>

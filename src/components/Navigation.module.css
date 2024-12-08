@@ -34,7 +34,7 @@ body{
     flex-direction: column;
     align-items: center;
     position: fixed;
-    z-index: 1000;
+    z-index: 999;
 }
 
 .sidenav-title {
@@ -218,6 +218,7 @@ body{
     to { transform: translateX(0); opacity: 1; }
 }
 
+/* Base styles remain unchanged */
 /* Responsive Adjustments */
 @media screen and (max-width: 768px) {
     /* Sidebar adjustments */
@@ -231,7 +232,7 @@ body{
         margin-left: -40px;
     }
 
-    .h1-title{
+    .h1-title {
         margin-top: 10px;
     }
 
@@ -276,7 +277,7 @@ body{
         font-size: 12px; /* Even smaller font size for mobile */
     }
 
-    .h1-title{
+    .h1-title {
         margin-top: 10px;
     }
 

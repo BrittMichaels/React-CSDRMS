@@ -8,6 +8,7 @@ import Navigation from '../Components/Navigation';
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import EditStudentModal from './EditStudentModal';
+import StudentDetailsModal from './StudentDetailsModal'; // Import the modal
 import Loader from '../Loader';
 
 import AddStudentIcon from '@mui/icons-material/PersonAdd';
@@ -15,6 +16,7 @@ import ImportIcon from '@mui/icons-material/FileDownload';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 
@@ -32,8 +34,8 @@ const StudentList = () => {
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showEditStudentModal, setShowEditStudentModal] = useState(false);
-const [selectedStudent, setSelectedStudent] = useState(null); // Store the selected student
-
+  const [selectedStudent, setSelectedStudent] = useState(null); // Store the selected student
+  const [showStudentDetailsModal, setShowStudentDetailsModal] = useState(false);
 
   // New states for filtering by grade and section
   const [grades, setGrades] = useState([]); // Available grades
@@ -289,6 +291,13 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
                       <td>{student.email}</td>
                       <td>{student.emergencyNumber}</td>
                       <td>
+                        <ViewNoteIcon
+                          className={buttonStyles['action-icon']}
+                          onClick={() => {
+                            setSelectedStudent(student); // Set the selected student
+                            setShowStudentDetailsModal(true); // Open the modal
+                          }}
+                        />
                         <EditNoteIcon
                           className={buttonStyles['action-icon']}
                           onClick={() => handleEditStudent(student)}
@@ -346,6 +355,13 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
             student={selectedStudent}
             onClose={() => setShowEditStudentModal(false)}
             refreshStudents={fetchStudents}
+          />
+        )}
+
+        {showStudentDetailsModal && selectedStudent && (
+          <StudentDetailsModal
+            student={selectedStudent}
+            onClose={() => setShowStudentDetailsModal(false)}
           />
         )}
 

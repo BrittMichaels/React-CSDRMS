@@ -72,8 +72,7 @@ const MenuPopupState = () => {
     return (
         <React.Fragment>
             {/* Display loader when loading */}
-            {loading && <Loader />}
-
+            {loading && <Loader />}    
             <PopupState variant="popover" popupId="demo-popup-menu">
                 {(popupState) => (
                     <React.Fragment>
@@ -94,7 +93,7 @@ const MenuPopupState = () => {
                         />
                     </React.Fragment>
                 )}
-            </PopupState>
+            </PopupState>        
         </React.Fragment>
     );
 };

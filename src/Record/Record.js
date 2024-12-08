@@ -218,7 +218,8 @@ const Record = () => {
                 <th>Monitored Record</th>
                 {/* <th>Status</th> Status column for Case */}
                 <th>Remarks/Complaint</th>
-                <th>Sanction</th>
+                <th>Source</th>
+                {/* <th>Sanction</th> */}
                 <th>Encoder</th>
                 <th>Actions</th>
               </tr>
@@ -261,7 +262,8 @@ const Record = () => {
                         </>
                       )}
                     </td>
-                    <td>{record.sanction}</td>
+                    <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
+                    {/* <td>{record.sanction}</td> */}
                     <td>
                       {record.encoder.firstname} {record.encoder.lastname}
                     </td>

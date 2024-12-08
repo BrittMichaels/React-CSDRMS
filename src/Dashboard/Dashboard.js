@@ -493,7 +493,7 @@ const Record = () => {
                                         <th>Misbehavior</th>
                                         <th>Clinic</th>
                                         <th>Request Permit</th>
-                                        <th>Sanction</th>
+                                        <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                     </tr>
                                 </thead>
                                 <tbody>
