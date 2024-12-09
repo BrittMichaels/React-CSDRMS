@@ -5,7 +5,7 @@ import axios from 'axios';
 import navStyles from './Navigation.module.css'; // CSS for Navigation
 import NotificationModal from './NotificationModal'; // Import NotificationModal
 import MenuPopupState from './MenuPopupState';
-import Loader from './Loader.js';
+import Loader from '../Loader.js';
 
 import JHSLogo from '../LoginPage/image-sso-yellow.png';
 
