@@ -96,9 +96,13 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
                             Year:
                             <select className={styles['select-timelog']} value={selectedYear} onChange={handleYearChange}>
                                 <option value="all">All</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
                                 <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
                             </select>
                         </label>
                     </div>
@@ -160,23 +164,6 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
                                     <th>Description</th>
                                 </tr>
                             </thead>
-                            {/* <tbody>
-                                {filteredTimeLogs.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="3" className={styles['timelog-no-results']} style={{ textAlign: 'center', fontSize: '1.5rem' }}>
-                                            No Results Found...
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredTimeLogs.map(log => (
-                                        <tr key={log.timelog_id}>
-                                            <td>{new Date(log.loginTime).toLocaleString()}</td>
-                                            <td>{log.logoutTime ? new Date(log.logoutTime).toLocaleString() : 'Not logged out yet'}</td>
-                                            <td>{log.duration} minute/s</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody> */}
                         <tbody>
                                 {filteredActivityLogs.length === 0 ? (
                                     <tr>

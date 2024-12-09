@@ -246,7 +246,7 @@ const Class = () => {
                                 <tr>
                                     <th>Grade</th>
                                     <th>Section</th>
-                                    <th>Actions</th>
+                                    <th style={{ borderRight: '0.5px solid #8A252C' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -278,7 +278,7 @@ const Class = () => {
                             <thead>
                                 <tr>
                                     <th>School Year</th>
-                                    <th>Actions</th>
+                                    <th style={{ borderRight: '0.5px solid #8A252C' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

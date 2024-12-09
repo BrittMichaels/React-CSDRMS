@@ -1,96 +1,98 @@
 .logbook-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay for better visibility */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .logbook-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 1500px;
-    height: 100vh;
-    max-width: 100%;
-    max-height: 100vh;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 95%; /* Adjust width for responsiveness */
+  max-width: 1500px; /* Ensure a max size */
+  max-height: 95vh; /* Avoid overflow on smaller screens */
+  overflow-y: auto; /* Scrollable content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative; /* Ensure position for the close button */
+}
+
+.modalTitle {
+  text-align: center;
+  color: #8A252C;
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .table-container {
-    max-height: 100%; /* Adjust height as needed */
-    width: 100%;
-    overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
-    border: 2px solid #8A252C;
-  }
+  max-height: 400px; /* Limit height for scrolling */
+  overflow-y: auto;
+  border: 2px solid #8A252C;
+  margin-top: 20px;
+}
 
-  .logbook-table {
-    width: 100%;
-    border-collapse: collapse; /* Ensures borders are not doubled */
-    table-layout: fixed; /* Ensures consistent cell width */
-  }
-  
-  .logbook-table thead th {
-    position: sticky; /* Sticky header */
-    top: 0; /* Stick to the top */
-    z-index: 1; /* Ensure header stays on top of scrolling body */
-    background-color: #8A252C; /* Keep background color to prevent overlapping with content */
-    color: white; /* White text for headers */
-    text-shadow: 3px 3px 5px #000;  /* Slight shadow for text */
-    font-weight: 600;
-    border: none;
-  }
-  
-  .logbook-table th, .logbook-table td {
-    padding: 10px;
-    font-size: 14px; /* Larger font size for readability */
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .logbook-table td {
-    padding: 10px;
-    font-size: 12px; /* Larger font size for readability */
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    text-align: center; /* Center align table data */
-    cursor: pointer; /* Pointer cursor for rows */
-  }
+.logbook-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Consistent table cell widths */
+}
 
+.logbook-table th {
+  background-color: #8A252C;
+  text-shadow: 3px 3px 5px #000;  /* Slight shadow for all text */
+  color: #fff;
+  padding: 5px;
+  text-align: center;
+  position: sticky; /* Sticky header */
+  top: 0;
+  z-index: 2;
+  font-size: 12px;
+}
+
+.logbook-table td {
+  padding: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+  word-wrap: break-word; /* Handle longer text gracefully */
+  font-size: 12px;
+}
+
+.logbook-table td:nth-child(1),
+.logbook-table th:nth-child(1) {
+  width: 5%;
+}
 
 .logbook-table td.clickableCell {
-    background-color: #f9f9f9; 
+  background-color: #f9f9f9;
+  cursor: pointer;
 }
 
 .logbook-table td.clickableCell:hover {
-    background-color: #dfe6e9;
-    transition: background-color 0.2s ease-in-out;
+  background-color: #e6e6e6;
+  transition: background-color 0.3s ease-in-out;
 }
-
-  .logbook-table td:nth-child(2), 
-.logbook-table th:nth-child(2) {
-  white-space: normal; /* Allow text to wrap */
-  word-wrap: break-word; /* Ensure long words wrap onto the next line */
-  word-break: break-word; /* For compatibility with different browsers */
-  width: 20%; /* Adjust the width to make the column longer */
-  text-align: left; /* Optional: Align text to the left for readability */
-}
-  
-  
-  .logbook-table tr {
-    background-color:#fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow to create "floating" effect */
-  }
-  
-  .logbook-table tr:hover {
-    background-color: #f4f6f9; /* Highlighted row color on hover */
-  }
 
   .filterContainer select {
+    /* padding: 10px; Reduced padding for a tighter look */
+    font-size: 14px; /* Adjust font size */
+    border: 1px solid #ccc; /* Consistent border */
+    border-radius: 4px; /* Smooth edges */
+    background-color: #fff; /* White background */
+    color: #414141; /* Darker text color for contrast */
+    width: auto; /* Adjusts width based on content */
+    text-align: center; /* Center the text inside the select */
+    margin-left: 10px; /* Removed unnecessary left margin */
+    position: relative;
+  }
+
+  .filterContainer input {
     /* padding: 10px; Reduced padding for a tighter look */
     font-size: 14px; /* Adjust font size */
     border: 1px solid #ccc; /* Consistent border */
@@ -111,7 +113,6 @@
     flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
     text-align: center;
   }
-
 
 /* Pagination Styles */
 .pagination {

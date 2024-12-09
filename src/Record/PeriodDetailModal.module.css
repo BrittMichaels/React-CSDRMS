@@ -15,9 +15,37 @@
     background: white;
     padding: 20px 30px;
     border-radius: 8px;
-    width: 400px;
+    width: 650px;
     max-width: 90%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     text-align: center;
 }
+
+.checkboxContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjust column width */
+    gap: 10px; /* Space between items */
+    margin: 20px 0; /* Space around the container */
+  }
+  
+.checkboxItem {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between checkbox and label text */
+    font-size: 14px; /* Adjust font size for readability */
+    text-align: left;
+    color: #8A252C; /* Set the label text color */
+}
+
+/* Style for the checkbox */
+.checkboxItem input[type="checkbox"] {
+    accent-color: #8A252C; /* Change the checkbox color when checked */
+}
+
+/* Optional: Add a hover effect to make the interaction clearer */
+.checkboxItem:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+  

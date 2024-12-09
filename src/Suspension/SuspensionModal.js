@@ -95,17 +95,19 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
     <Modal open={isOpen} onClose={onClose}>
       
       <Box className={styles["suspension-modal-modalContainer"]}>
-      <button
-        className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
-        style={{
-          display: 'flex', // Make the button a flex container
-          justifyContent: 'flex-start', // Align content to the left
-          alignItems: 'center', // Vertically center the content
-        }}
-        onClick={handleExportToPDF}
-      >
-        <ExportIcon style={{ marginRight: '8px' }} /> Export to PDF
-      </button>
+      {loggedInUser?.userType === 1 && (
+        <button
+          className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+          style={{
+            display: 'flex', // Make the button a flex container
+            justifyContent: 'flex-start', // Align content to the left
+            alignItems: 'center', // Vertically center the content
+          }}
+          onClick={handleExportToPDF}
+        >
+          <ExportIcon style={{ marginRight: '8px' }} /> Export to PDF
+        </button>
+      )}
       <button onClick={onClose} className={styles['closeButton']}>
         ✕
       </button>
@@ -201,9 +203,6 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
               </div>
             </div>
           </div>
-
-
-
         </div>
         </div>
       </Box>

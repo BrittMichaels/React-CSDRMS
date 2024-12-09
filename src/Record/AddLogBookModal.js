@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './AddLogBookModal.module.css'; 
 import formStyles from '../GlobalForm.module.css';
+import buttonStyles from '../GlobalButton.module.css'
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PeriodDetailModal from './PeriodDetailModal'; 
@@ -177,51 +180,51 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
 
         {/* Filter Section */}
         <div className={styles.filterContainer}>
-          <label>School Year:
-            <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
-              {schoolYears.map((year) => (
-                <option key={year.schoolYear_ID} value={year.schoolYear}>
-                  {year.schoolYear}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label>School Year:
+              <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
+                {schoolYears.map((year) => (
+                  <option key={year.schoolYear_ID} value={year.schoolYear}>
+                    {year.schoolYear}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>Grade:
-            <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
-              {grades.map((grade) => (
-                <option key={grade} value={grade}>
-                  {grade}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label>Grade:
+              <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
+                {grades.map((grade) => (
+                  <option key={grade} value={grade}>
+                    {grade}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>Section:
-            <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
-              {sections.map((section) => (
-                <option key={section} value={section}>
-                  {section.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label>Section:
+              <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
+                {sections.map((section) => (
+                  <option key={section} value={section}>
+                    {section.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          {/* Date Picker Section */}
-          <label>Record Date:
-            <input 
-              type="date" 
-              value={selectedDate} 
-              onChange={(e) => setSelectedDate(e.target.value)} 
-            />
-          </label>
+            {/* Date Picker Section */}
+            <label>Record Date:
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
+              />
+            </label>
         </div>
 
         <div className={styles['table-container']}>
           <table className={styles['logbook-table']}>
             <thead>
               <tr>
-                <th>#</th>
+                <th style={{borderLeft: '0.5px solid #8A252C'}}>#</th>
                 <th>Student Name</th>
                 {[...Array(8).keys()].map(period => (
                   <th key={period + 1}>{period + 1}</th>
@@ -229,38 +232,63 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
               </tr>
             </thead>
             <tbody>
-              {currentPageStudents.map((student, index) => (
-                <tr key={student.id}>
-                  <td>{index + 1 + (currentPage - 1) * studentsPerPage}</td>
-                  <td>{student.name}</td>
-                  {[...Array(8).keys()].map(period => (
-                    <td 
-                      key={period + 1} 
-                      className={styles.clickableCell} 
-                      onClick={() => handlePeriodClick(student, period + 1)}
-                    >
-                      {monitoredRecords[`record-${student.id}-${period + 1}`] || 'Select'}
-                    </td>
-                  ))}
+              {students.length === 0 ? (
+                <tr>
+                  <td colSpan="10">
+                    No students available.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                currentPageStudents.map((student, index) => (
+                  <tr key={student.id}>
+                    <td>{index + 1 + (currentPage - 1) * studentsPerPage}</td>
+                    <td>{student.name}</td>
+                    {[...Array(8).keys()].map(period => (
+                      <td
+                        key={period + 1}
+                        className={styles.clickableCell}
+                        onClick={() => handlePeriodClick(student, period + 1)}
+                      >
+                        {monitoredRecords[`record-${student.id}-${period + 1}`] || (
+                          <AddCircleIcon style={{ color: '#8A252C' }} />
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        <div className={styles['pagination']}>
-          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+        <div className={styles.pagination}>
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1 || students.length === 0}
+            aria-label="Previous Page"
+          >
             <ArrowBackIcon />
           </button>
-          <span>{currentPage}</span>
-          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>
+          <span>
+            Page {currentPage} of {totalPages || 1}
+          </span>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages || students.length === 0}
+            aria-label="Next Page"
+          >
             <ArrowForwardIcon />
           </button>
         </div>
 
-        <div className={styles['actions']}>
-          <button className={formStyles.cancelBtn} onClick={onClose}>Cancel</button>
-          <button className={formStyles.submitBtn} onClick={handleSubmit}>Save</button>
+        <div className={buttonStyles['button-group']}>
+          <button onClick={handleSubmit} className={`${formStyles.submitBtn} ${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>
+            Submit
+          </button>
+
+          <button onClick={onClose} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>
+            Cancel
+          </button>
         </div>
 
         {/* Period Detail Modal */}
