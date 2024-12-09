@@ -20,6 +20,10 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
     setDays(suspension.days);
   }, [suspension]);
 
+  const handleInputChange = (e) => {
+    if (e.target.value === "" || parseInt(e.target.value) >= 1) setDays(e.target.value);
+  }
+  
   // Function to handle saving edited suspension data
   const handleSave = async () => {
     if (!startDate || !endDate || !returnDate || !days) {
@@ -58,7 +62,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
             <input
               type="number"
               value={days}
-              onChange={(e) => setDays(e.target.value)}
+              onChange={handleInputChange}
               className={styles['suspension-input']}
               
             />
