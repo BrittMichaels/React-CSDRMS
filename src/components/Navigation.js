@@ -26,6 +26,83 @@ const Navigation = ({ loggedInUser }) => {
   const [notifications, setNotifications] = useState([]); // All notifications for display
   const [notificationToggle, setNotificationToggle] = useState(false);
 
+  const INACTIVITY_TIME_LIMIT = 10000; // 10 seconds for testing purposes
+  let inactivityTimer;
+
+  const resetInactivityTimer = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => handleLogout(), INACTIVITY_TIME_LIMIT);
+  };
+
+  const handleLogout = () => {
+    // Clear session data
+    localStorage.removeItem('authToken');
+    sessionStorage.clear();
+
+    // Navigate to login page
+    navigate('/login');
+    alert('You have been logged out due to inactivity.');
+  };
+
+  // Attach activity listeners
+  useEffect(() => {
+    const activityEvents = ['mousemove', 'keypress', 'mousedown', 'touchstart'];
+
+    const setupActivityListeners = () => {
+      activityEvents.forEach((event) => {
+        window.addEventListener(event, resetInactivityTimer);
+      });
+    };
+
+    const removeActivityListeners = () => {
+      activityEvents.forEach((event) => {
+        window.removeEventListener(event, resetInactivityTimer);
+      });
+    };
+
+    // Start inactivity timer and setup listeners
+    resetInactivityTimer();
+    setupActivityListeners();
+
+    // Cleanup on component unmount
+    return () => {
+      clearTimeout(inactivityTimer);
+      removeActivityListeners();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/notifications/user/${userId}`);
+        const notificationsData = response.data;
+
+        notificationsData.sort((a, b) => b.userNotificationId - a.userNotificationId);
+        // Filter unviewed notifications and set count
+        const unviewedNotifications = notificationsData.filter((notification) => !notification.viewed);
+
+        setUnviewedCount(unviewedNotifications.length);
+
+        // Set all notifications for modal display
+        setNotifications(notificationsData);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [userId]);
+
+  const handleToggleNotification = () => {
+    if (notificationToggle) setNotificationToggle(false);
+    else setNotificationToggle(true);
+  };
+
+  // Handle closing the notification modal
+  const handleModalClose = () => {
+    setNotificationToggle(false);
+  };
+
   const createSidebarLink = (to, text, IconComponent) => {
     const isActive = location.pathname === to; // Check if the link is active
 
@@ -40,38 +117,6 @@ const Navigation = ({ loggedInUser }) => {
     );
   };
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/notifications/user/${userId}`);
-        const notificationsData = response.data;
-
-        notificationsData.sort((a, b) => b.userNotificationId - a.userNotificationId);
-        // Filter unviewed notifications and set count
-       
-        const unviewedNotifications = notificationsData.filter(notification => !notification.viewed);
-       
-        setUnviewedCount(unviewedNotifications.length);
-  
-        // Set all notifications for modal display
-        setNotifications(notificationsData);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      }
-    };
-  
-    fetchNotifications();
-  }, [userId]);
-  
-  const handleToggleNotification = () =>{
-    if(notificationToggle) setNotificationToggle(false); else setNotificationToggle(true);
-  }
-
-  // Handle closing the notification modal
-  const handleModalClose = () => {
-    setNotificationToggle(false);
-  };
-
   return (
     <>
       {/* Only render the sidenav title and links if the userType is not 5 */}
@@ -80,31 +125,31 @@ const Navigation = ({ loggedInUser }) => {
           <div className={navStyles['sidenav-title']}>MENU</div>
           {/* Render sidebar links */
            /* SSO - usertype 1 */}
-            {loggedInUser.userType === 1 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/record", "Record", PostAddIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/activitylog", "Activity Log", AccessTimeIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/student', 'Student', SchoolIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/record', 'Record', PostAddIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/suspension', 'Suspension', LocalPoliceIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/activitylog', 'Activity Log', AccessTimeIcon)}
 
-            {/* Principal - usertype 2 */}
-            {loggedInUser.userType === 2 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 2 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
-            {loggedInUser.userType === 2 && createSidebarLink("/record", "Complaint", PostAddIcon)}
+          {/* Principal - usertype 2 */}
+          {loggedInUser.userType === 2 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
+          {loggedInUser.userType === 2 && createSidebarLink('/suspension', 'Suspension', LocalPoliceIcon)}
+          {loggedInUser.userType === 2 && createSidebarLink('/record', 'Complaint', PostAddIcon)}
 
-            {/* Adviser - usertype 3 */}
-            {loggedInUser.userType === 3 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 3 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {loggedInUser.userType === 3 && createSidebarLink("/record", "Record", PostAddIcon)}
+          {/* Adviser - usertype 3 */}
+          {loggedInUser.userType === 3 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
+          {loggedInUser.userType === 3 && createSidebarLink('/student', 'Student', SchoolIcon)}
+          {loggedInUser.userType === 3 && createSidebarLink('/record', 'Record', PostAddIcon)}
 
-            {/* Admin - usertype 4 */}
-            {loggedInUser.userType === 4 && createSidebarLink("/UserManagement", "Users", AccountBoxIcon)}
-            {loggedInUser.userType === 4 && createSidebarLink("/Class", "Class", SchoolIcon)}
-            {loggedInUser.userType === 4 && createSidebarLink("/StudentList", "Student List", AssignmentIcon)}
-            {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AccessTimeIcon)}
+          {/* Admin - usertype 4 */}
+          {loggedInUser.userType === 4 && createSidebarLink('/UserManagement', 'Users', AccountBoxIcon)}
+          {loggedInUser.userType === 4 && createSidebarLink('/Class', 'Class', SchoolIcon)}
+          {loggedInUser.userType === 4 && createSidebarLink('/StudentList', 'Student List', AssignmentIcon)}
+          {loggedInUser.userType === 4 && createSidebarLink('/activitylog', 'Activity Log', AccessTimeIcon)}
 
-            {/* Guidance - usertype 6 */}
-            {loggedInUser.userType === 6 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 6 && createSidebarLink("/record", "Complaint", PostAddIcon)}
+          {/* Guidance - usertype 6 */}
+          {loggedInUser.userType === 6 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
+          {loggedInUser.userType === 6 && createSidebarLink('/record', 'Complaint', PostAddIcon)}
         </div>
       )}
 
@@ -129,9 +174,9 @@ const Navigation = ({ loggedInUser }) => {
 
       {/* Render Notification Modal */}
       {notificationToggle && (
-        <NotificationModal 
-          onClose={handleModalClose} 
-          notifications={notifications} 
+        <NotificationModal
+          onClose={handleModalClose}
+          notifications={notifications}
           loggedInUser={loggedInUser}
           setNotifications={setNotifications}
           refreshNotifications={() => setUnviewedCount(0)} // Refresh unviewed count
