@@ -33,6 +33,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     'Misbehavior',
     'Clinic',
     ...(source !== 2 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
+    'TBD',
   ];
 
   // Fetch students on component mount
@@ -114,6 +115,19 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
         <h2>Add New Record</h2>
 
         <div className={formStyles['form-container']}>
+          <div className={formStyles['form-group']}>
+            <label>Source</label>
+            <select
+              value={source || ''}
+              onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
+              className={`${formStyles['input']} ${styles['student-modal-select']}`}
+              disabled={loggedInUser.userType !== 1}
+            >
+              <option value="1">Log Book</option>
+              <option value="2">Complaint</option>
+            </select>
+          </div>
+          
           {!student && (
             <>
               <div className={formStyles['form-group']}>
@@ -199,21 +213,6 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
               ))}
             </select>
           </div>
-
-          
-            <div className={formStyles['form-group']}>
-              <label>Source</label>
-              <select
-                value={source || ''}
-                onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
-                className={`${formStyles['input']} ${styles['student-modal-select']}`}
-                disabled={loggedInUser.userType !== 1}
-              >
-                <option value="1">Log Book</option>
-                <option value="2">Complaint</option>
-              </select>
-            </div>
-         
 
           {/* Show Complainant and Complaint if source is Complaint */}
           {source === 2 ? (

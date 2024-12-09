@@ -492,7 +492,7 @@ const Student = () => {
               <tbody>
                 {filteredRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={4} style={{ textAlign: 'center' }}>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>
                       No records found.
                     </td>
                   </tr>

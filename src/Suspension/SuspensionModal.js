@@ -10,6 +10,7 @@ import buttonStyles from "../GlobalButton.module.css";
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import Imagesso from './Image-jhssso.png';
 
 const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   const authToken = localStorage.getItem('authToken');
@@ -58,38 +59,46 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
 
   const handleExportToPDF = async () => {
     const element = exportRef.current;
-
+  
     // Capture the element as an image using html2canvas
     const canvas = await html2canvas(element);
     const imgData = canvas.toDataURL('image/png');
-
-    // Create jsPDF document with long bond paper size
+  
+    // Create jsPDF document with letter size
     const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: [216, 330], // Long bond paper size in mm
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter', // Letter size (8.5 x 11 inches)
     });
-
-    // Define margins and calculate content dimensions
-    const marginTop = 20; // Top margin in mm
-    const marginLeft = 10; // Left margin in mm
-    const pdfWidth = 216 - 2 * marginLeft; // Width adjusted for margins
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
-
+  
+    // Define margins (1 inch = 25.4mm)
+    const marginTop = 20; // Top margin set to 20mm
+    const marginLeft = 25.4; // 1 inch left margin in mm
+    const marginRight = 25.4; // 1 inch right margin in mm
+    const marginBottom = 25.4; // 1 inch bottom margin in mm
+  
+    // Letter size dimensions (8.5 x 11 inches), converted to mm
+    const pdfWidth = 215.9 - marginLeft - marginRight; // Width adjusted for margins
+    const pdfHeight = 279.4 - marginTop - marginBottom; // Height adjusted for margins
+  
+    // Maintain aspect ratio of the content
+    const canvasRatio = canvas.width / canvas.height;
+    const pdfHeightAdjusted = pdfWidth / canvasRatio;
+  
     // Add title and custom header (optional)
     pdf.setFontSize(16);
-    // pdf.text('Student Suspension', marginLeft, marginTop - 10);
-
+  
     // Add the image content with margins
-    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeight);
-
-    // Optional footer
-    pdf.setFontSize(10);
-    pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 330 - 10); // Bottom left corner
-
+    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeightAdjusted);
+  
+    // Optional footer (uncomment to add footer)
+    // pdf.setFontSize(10);
+    // pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 279.4 - marginBottom + 10); // Bottom left corner
+  
     // Save the PDF
     pdf.save('suspension-form.pdf');
-};
+  };
+  
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -113,14 +122,14 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
       </button>
       <div ref={exportRef} className={styles.exportSection}>
         <div className={styles["suspension-modal-formContainer"]}>
-        
+          <img src={Imagesso} alt="HS-SSO Logo" className={styles["suspension-modal-image"]} />
           <h2 className={styles["suspension-modal-title"]}>Suspension Form</h2>
 
           {/* Date Field */}
           <p><strong>Date: </strong> {new Date().toLocaleDateString()}</p>
 
           {/* Principal's Address */}
-          <p><strong>To:</strong> {principal ? `${principal.firstname} ${principal.lastname}` : "Loading..."}<br />
+          <p><strong>{principal ? `${principal.firstname} ${principal.lastname}` : "Loading..."}</strong><br />
           Principal<br />
           Cebu Institute of Technology - University<br />
           Cebu City</p>
@@ -143,9 +152,8 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
           </p>
 
           {/* Offense */}
-          <p><strong>OFFENSE(S) COMMITTED:</strong></p>
-          <p> <strong>{suspension.record.complaint}</strong></p>
-          <p> <strong>Details: <br />{suspension.record.investigationDetails}</strong></p>
+          <p><strong>OFFENSE(S) COMMITTED: <br />{suspension.record.complaint}</strong></p>
+          <p> <strong>DETAILS: <br />{suspension.record.investigationDetails}</strong></p>
 
           {/* Closing */}
           <p>

@@ -9,7 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PeriodDetailModal from './PeriodDetailModal'; 
 
-const AddLogBookModal = ({ isOpen, onClose, records }) => {
+const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   const [students, setStudents] = useState([]); 
   const [currentPage, setCurrentPage] = useState(1); 
   const [studentsPerPage] = useState(10); 
@@ -174,6 +174,8 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       alert('Records successfully saved!');
+      refreshRecords();
+      onClose();
     } catch (error) {
       console.error('Error saving records:', error);
       alert('Failed to save records.');

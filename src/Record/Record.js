@@ -26,6 +26,7 @@ const Record = () => {
   const [showAddLogBookModal, setShowAddLogBookModal] = useState(false); // ✅ State for AddLogBookModal
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [filterType, setFilterType] = useState('All'); // Default filter is "All"
+  const [monitoredRecordFilter, setMonitoredRecordFilter] = useState('All');
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -131,24 +132,44 @@ const Record = () => {
     }
   };
 
+  const monitoredRecordsList = [
+    'Absent',
+    'Tardy',
+    'Cutting Classes',
+    'Improper Uniform',
+    'Offense',
+    'Misbehavior',
+    'Clinic',
+    ...(loggedInUser.userType !== 2 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
+    'TBD',
+  ];
+
   const filteredRecords = records.filter((record) => {
     const matchesSearch =
       record.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       record.student.sid.toLowerCase().includes(searchQuery.toLowerCase());
   
+    // Filter by monitored record type
+    const matchesMonitoredRecord =
+      monitoredRecordFilter === 'All' || record.monitored_record === monitoredRecordFilter;
+  
     if (filterType === 'All') {
-      return matchesSearch;
+      return matchesSearch && matchesMonitoredRecord;
     }
+  
     if (filterType === 'Log Book') {
-      return record.source === 1 && matchesSearch;
+      return record.source === 1 && matchesSearch && matchesMonitoredRecord;
     }
+  
     if (filterType === 'Complaint') {
-      if (caseStatusFilter === 'Complete') return record.complete === 1 && matchesSearch;
-      if (caseStatusFilter === 'Incomplete') return record.complete === 0 && matchesSearch;
-      return record.source === 2 && matchesSearch;
+      if (caseStatusFilter === 'Complete') return record.complete === 1 && matchesSearch && matchesMonitoredRecord;
+      if (caseStatusFilter === 'Incomplete') return record.complete === 0 && matchesSearch && matchesMonitoredRecord;
+      return record.source === 2 && matchesSearch && matchesMonitoredRecord;
     }
+  
     return false;
   });
+  
 
   return (
     <div className={navStyles.wrapper}>
@@ -171,15 +192,14 @@ const Record = () => {
               : 'Student Records From Complaints'}
           </h2>
 
-             
-          
+
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
           {loggedInUser?.userType === 1 && (
             <button
                 className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
                 onClick={openAddLogBookModal}
               >
-                <AddIcon /> Add LogBook
+                <AddIcon /> Add Log Book
               </button>
           )}
             <button
@@ -194,8 +214,18 @@ const Record = () => {
         <div className={styles.filterContainer}>
           <label>
              Filter by:
+            {/* Monitored Record Filter */}
+            <select onChange={(e) => setMonitoredRecordFilter(e.target.value)} value={monitoredRecordFilter}>
+              <option value="All">All Monitored Records</option>
+              {monitoredRecordsList.map((record) => (
+                <option key={record} value={record}>
+                  {record}
+                </option>
+              ))}
+            </select>
+            
             <select onChange={(e) => setFilterType(e.target.value)} value={filterType} disabled={loggedInUser?.userType === 5 || loggedInUser?.userType === 6}>
-              <option value="All">All</option>
+              <option value="All">All Sources</option>
               <option value="Log Book">Log Book</option>
               <option value="Complaint">Complaint</option>
             </select>
@@ -205,7 +235,7 @@ const Record = () => {
                 onChange={(e) => setCaseStatusFilter(e.target.value)}
                 value={caseStatusFilter}
               >
-                <option value="All">All</option>
+                <option value="All">Select Status</option>
                 <option value="Complete">Complete</option>
                 <option value="Incomplete">Incomplete</option>
               </select>
@@ -220,7 +250,7 @@ const Record = () => {
                 className={styles['search-input']}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by Name or ID"
+                placeholder="Search by Name"
                 />
             </div>
           </div> 
@@ -274,8 +304,7 @@ const Record = () => {
                       ) : (
                         <>
                           <strong>Remarks:</strong><br />
-                          {record.remarks} <br /><br />
-                          <strong>Source:</strong> Logbook
+                          {record.remarks || 'N/A'} <br />
                         </>
                       )}
                     </td>
@@ -326,7 +355,7 @@ const Record = () => {
       )}
 
       {showAddLogBookModal && (
-        <AddLogBookModal isOpen={showAddLogBookModal} onClose={closeAddLogBookModal} records={records}  />
+        <AddLogBookModal isOpen={showAddLogBookModal} onClose={closeAddLogBookModal} refreshRecords={fetchRecords}  />
       )}
 
 
