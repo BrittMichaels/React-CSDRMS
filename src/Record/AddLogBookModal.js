@@ -23,6 +23,7 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const [monitoredRecords, setMonitoredRecords] = useState({}); 
+  const [remarks, setRemarks] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]); // Added date state
   const totalPages = Math.ceil(students.length / studentsPerPage);
   const authToken = localStorage.getItem('authToken');
@@ -127,12 +128,16 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
     setIsPeriodModalOpen(true);
   };
 
-  const closePeriodModal = (selectedRecord) => {
+  const closePeriodModal = (selectedRecord, periodRemarks) => {
     if (selectedRecord) {
       const key = `record-${selectedStudent.id}-${selectedPeriod}`;
       setMonitoredRecords((prevRecords) => ({
         ...prevRecords,
         [key]: selectedRecord,
+      }));
+      setRemarks((prevRemarks) => ({
+        ...prevRemarks,
+        [`record-${selectedStudent.id}-${selectedPeriod}`]: periodRemarks,
       }));
     }
     setIsPeriodModalOpen(false);
@@ -150,6 +155,7 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
   const handleSubmit = async () => {
     const payload = Object.entries(monitoredRecords).flatMap(([key, monitoredRecords]) => {
       const [_, studentId, period] = key.split('-');
+      const recordRemarks = remarks[key]; // Get remarks for the record
       return monitoredRecords.map(monitored_record => ({
         id: parseInt(studentId),
         encoderId: loggedInUser.userId,
@@ -158,7 +164,8 @@ const AddLogBookModal = ({ isOpen, onClose, records }) => {
         monitored_record,
         period: parseInt(period),
         source: 1, 
-        complete: 0
+        complete: 0,
+        remarks: recordRemarks || '' // Include remarks in the payload
       }));
     });
 

@@ -154,7 +154,7 @@ const Record = () => {
             if (selectedGrade) {
                 try {
                     const response = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
-                    setSectionsForGrade(response.data.map(section => section.toLowerCase())); 
+                    setSectionsForGrade(response.data.map(section => section.toUpperCase())); 
                 } catch (err) {
                     setError(err.message || 'Error fetching sections.');
                 }
@@ -198,7 +198,7 @@ const Record = () => {
                 const isMonthMatch = !selectedMonth || recordMonth === selectedMonth;
                 const isWeekMatch = !selectedWeek || week === parseInt(selectedWeek);
                 const isGradeMatch = !selectedGrade || record.student.grade === parseInt(selectedGrade);
-                const isSectionMatch = !selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase();
+                const isSectionMatch = !selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase();
 
 
                 if (isYearMatch && isMonthMatch && isWeekMatch && isGradeMatch && isSectionMatch) {
@@ -249,7 +249,7 @@ const Record = () => {
     const filteredStudentRecords = records
         .filter(record => 
             (!selectedGrade || record.student.grade === parseInt(selectedGrade)) && 
-            (!selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase())
+            (!selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase())
         )
         .reduce((acc, record) => {
             const studentName = record.student.name;
@@ -442,13 +442,13 @@ const Record = () => {
                                 {selectedGrade && (
                                         <select
                                             id="section"
-                                            value={selectedSection.toLowerCase()}
+                                            value={selectedSection.toUpperCase()}
                                             onChange={handleSectionChange}
                                             disabled={loggedInUser.userType === 3}
                                         >
                                             <option value="">All Sections</option>
                                             {sectionsForGrade.map((section, index) => (
-                                                <option key={index} value={section.toLowerCase()}>{section}</option>
+                                                <option key={index} value={section.toUpperCase()}>{section}</option>
                                             ))}
                                         </select>
                                 )}

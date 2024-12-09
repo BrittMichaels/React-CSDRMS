@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import styles from './PeriodDetailModal.module.css';
-import buttonStyles from '../GlobalButton.module.css'
+import buttonStyles from '../GlobalButton.module.css';
 
 const options = [
   'Absent',
   'Tardy',
   'Cutting Classes',
   'Improper Uniform',
-  'Offense',
-  'Misbehavior',
 ];
 
 const PeriodDetailModal = ({ student, period, onClose }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [remarks, setRemarks] = useState(''); // Add state for remarks
 
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) => 
@@ -23,9 +22,8 @@ const PeriodDetailModal = ({ student, period, onClose }) => {
   };
 
   const handleSubmit = () => {
-    onClose(selectedOptions); 
+    onClose(selectedOptions, remarks); // Pass selected options and remarks
   };
-
 
   return (
     <div className={styles.modalOverlay}>
@@ -43,6 +41,18 @@ const PeriodDetailModal = ({ student, period, onClose }) => {
             </label>
           ))}
         </div>
+
+        {/* Remarks Input */}
+        <div className={styles.remarksContainer}>
+          <label htmlFor="remarks">Remarks:</label>
+          <textarea
+            id="remarks"
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            placeholder="Enter remarks here"
+          />
+        </div>
+
         <div className={buttonStyles['button-group']}>
           <button onClick={handleSubmit} className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>Submit</button>
           <button onClick={() => onClose(null)} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>Close</button>
