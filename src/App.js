@@ -46,6 +46,7 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 1 && (
             <>
+              <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 
           )}
@@ -53,15 +54,13 @@ function App() {
           {(loggedInUser && (loggedInUser.userType === 1 ||  loggedInUser.userType === 2))&& (
             <>
               <Route path="/suspension" element={<Suspension />} />
-             <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 
           )}
 
           {loggedInUser && loggedInUser.userType === 3 && (
             <>
-           
-            
+              <Route path="/StudentList" element={<PrivateRoute element={<StudentList />} />} />            
             </>
           )}
 
@@ -77,8 +76,6 @@ function App() {
           {(loggedInUser && (loggedInUser.userType === 1 || loggedInUser.userType === 3)) && (
             <>
             <Route path="/student" element={<Student />}  />
-            {/*<Route path="/student" element={<PrivateRoute element={<Student />} />}  /> */}
-            {/* <Route path="/add-record/:sid" element={<AddStudentRecord />} />  */}
             </>
 
           )}
@@ -86,7 +83,6 @@ function App() {
           {(loggedInUser && (loggedInUser.userType !== 4)) && (
             <>
             <Route path="/record" element={<Record />} />
-            {/* <Route path="/view-report/:reportId" element={<ViewReport />} />  */}
             </>
 
           )}

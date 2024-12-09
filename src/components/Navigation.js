@@ -5,6 +5,7 @@ import axios from 'axios';
 import navStyles from './Navigation.module.css'; // CSS for Navigation
 import NotificationModal from './NotificationModal'; // Import NotificationModal
 import MenuPopupState from './MenuPopupState';
+import Loader from './Loader.js';
 
 import JHSLogo from '../LoginPage/image-sso-yellow.png';
 
@@ -22,11 +23,12 @@ const Navigation = ({ loggedInUser }) => {
   const { userId } = loggedInUser;
   const navigate = useNavigate();
   const location = useLocation(); // To get the current URL path
+  
   const [unviewedCount, setUnviewedCount] = useState(0); // To store count of unviewed notifications
   const [notifications, setNotifications] = useState([]); // All notifications for display
   const [notificationToggle, setNotificationToggle] = useState(false);
 
-  const INACTIVITY_TIME_LIMIT = 10000; // 10 seconds for testing purposes
+  const INACTIVITY_TIME_LIMIT = 5 * 60 * 1000; // 5 minutes
   let inactivityTimer;
 
   const resetInactivityTimer = () => {
@@ -40,8 +42,9 @@ const Navigation = ({ loggedInUser }) => {
     sessionStorage.clear();
 
     // Navigate to login page
-    navigate('/login');
+    navigate('/');
     alert('You have been logged out due to inactivity.');
+    <Loader />
   };
 
   // Attach activity listeners
@@ -139,6 +142,7 @@ const Navigation = ({ loggedInUser }) => {
           {/* Adviser - usertype 3 */}
           {loggedInUser.userType === 3 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 3 && createSidebarLink('/student', 'Student', SchoolIcon)}
+          {loggedInUser.userType === 3 && createSidebarLink("/StudentList", "Student List", AssignmentIcon)}
           {loggedInUser.userType === 3 && createSidebarLink('/record', 'Record', PostAddIcon)}
 
           {/* Admin - usertype 4 */}

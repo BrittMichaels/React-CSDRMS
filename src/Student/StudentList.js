@@ -53,10 +53,19 @@ const StudentList = () => {
       const userType = loggedInUser.userType;
 
       if (userType === 4) {
-        response = await axios.get(
-          'http://localhost:8080/student/getAllCurrentStudents'
-        );
+        // Admin: Fetch all current students
+        response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
+      } else if (userType === 3){
+        // Adviser: Fetch students based on grade, section, and school year
+        response = await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', { 
+          params: {
+            grade: loggedInUser.grade,
+            section: loggedInUser.section,
+            schoolYear: loggedInUser.schoolYear
+          }
+        });
       }
+      
 
       if (Array.isArray(response.data)) {
         setStudents(response.data);
@@ -116,6 +125,7 @@ const StudentList = () => {
 
     const userTypeTitles = {
         1: 'SSO',
+        3: 'Adviser',
         4: 'Admin',
     };
 
@@ -124,23 +134,37 @@ const StudentList = () => {
     }, []);
 
   // Filter students based on search query, grade, and section
-  const filteredStudents = students.filter((student) => {
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch =
-      student.sid.toString().toLowerCase().includes(searchLower) ||
-      student.name.toLowerCase().includes(searchLower) ||
-      `${student.grade} - ${student.section}`.toLowerCase().includes(searchLower) ||
-      student.gender.toLowerCase().includes(searchLower) ||
-      student.email.toLowerCase().includes(searchLower) ||
-      student.emergencyNumber.toLowerCase().includes(searchLower);
+  const filteredStudents = students
+    .filter((student) => {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch =
+        student.sid.toString().toLowerCase().includes(searchLower) ||
+        student.name.toLowerCase().includes(searchLower) ||
+        `${student.grade} - ${student.section}`.toLowerCase().includes(searchLower) ||
+        student.gender.toLowerCase().includes(searchLower) ||
+        student.email.toLowerCase().includes(searchLower) ||
+        student.emergencyNumber.toLowerCase().includes(searchLower);
 
-    const matchesGrade = selectedGrade ? student.grade === parseInt(selectedGrade) : true;
-    const matchesSection = selectedSection ? student.section.toUpperCase() === selectedSection.toUpperCase() : true;
-    const matchesSchoolYear = selectedSchoolYear ? student.schoolYear === selectedSchoolYear : true; // School year match
+      const matchesGrade = selectedGrade ? student.grade === parseInt(selectedGrade) : true;
+      const matchesSection = selectedSection ? student.section.toUpperCase() === selectedSection.toUpperCase() : true;
+      const matchesSchoolYear = selectedSchoolYear ? student.schoolYear === selectedSchoolYear : true; // School year match
 
+      return matchesSearch && matchesGrade && matchesSection && matchesSchoolYear;
+    })
+    .sort((a, b) => {
+      // 1. Sort by gender: male comes first
+      if (a.gender.toLowerCase() === 'male' && b.gender.toLowerCase() !== 'male') return -1;
+      if (a.gender.toLowerCase() !== 'male' && b.gender.toLowerCase() === 'male') return 1;
 
-    return matchesSearch && matchesGrade && matchesSection && matchesSchoolYear;
-  });
+      // 2. If gender is the same, sort by first name (alphabetically)
+      const nameA = a.name.split(' ')[0].toLowerCase(); // Extract first name and convert to lowercase
+      const nameB = b.name.split(' ')[0].toLowerCase(); // Extract first name and convert to lowercase
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+
+      // 3. Sort by grade in ascending order if both gender and first name are the same
+      return a.grade - b.grade;
+    });
 
   const handleEditStudent = (student) => {
     setShowAddStudentModal(false); // Close the Add Student modal if open
@@ -176,68 +200,90 @@ const StudentList = () => {
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Student List</h2>
           <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
-            <button
-              onClick={() => setShowAddStudentModal(true)}
-              className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
-            >
-              <AddStudentIcon />
-              Add Student
-            </button>
+            {loggedInUser.userType === 4 && (
+              <>
+                <button
+                  onClick={() => setShowAddStudentModal(true)}
+                  className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+                >
+                  <AddStudentIcon />
+                  Add Student
+                </button>
 
-            <button
-              onClick={() => setShowImportModal(true)}
-              className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
-            >
-              <ImportIcon />
-              Import Student
-            </button>
+                <button
+                  onClick={() => setShowImportModal(true)}
+                  className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+                >
+                  <ImportIcon />
+                  Import Student
+                </button>
+              </>
+            )}
           </div>
         </div>
         
         <div className={styles['filter-container']}>
           <label>Filter by: 
-            <select
-              value={selectedSchoolYear}
-              onChange={(e) => setSelectedSchoolYear(e.target.value)}
-            >
-              <option value="">Select School Year</option>
-              {schoolYears.map((year) => (
-                <option key={year.schoolYear_ID} value={year.schoolYear}>
-                  {year.schoolYear} {/* Make sure to use the correct property */}
-                </option>
-              ))}
-            </select>
+            {loggedInUser?.userType === 4 && (
+              <select
+                value={selectedSchoolYear}
+                onChange={(e) => setSelectedSchoolYear(e.target.value)}
+              >
+                <option value="">Select School Year</option>
+                {schoolYears.map((year) => (
+                  <option key={year.schoolYear_ID} value={year.schoolYear}>
+                    {year.schoolYear} {/* Make sure to use the correct property */}
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Grade Filter */}
-            <select
-              value={selectedGrade}
-              onChange={(e) => {
-                setSelectedGrade(e.target.value);
-                setSelectedSection(''); // Reset section when grade changes
-              }}
-            >
-              <option value="">Select Grade</option>
-              {grades.map((grade) => (
-                <option key={grade} value={grade}>
-                  {grade}
-                </option>
-              ))}
-            </select>
+            {loggedInUser?.userType === 3 ? (
+              // If the user is an Adviser, show their grade as a disabled option
+              <select value={loggedInUser.grade} disabled>
+                <option value={loggedInUser.grade}>{loggedInUser.grade}</option>
+              </select>
+            ) : (
+              <select
+                value={selectedGrade}
+                onChange={(e) => {
+                  setSelectedGrade(e.target.value);
+                  setSelectedSection(''); // Reset section when grade changes
+                }}
+                disabled={loggedInUser?.userType === 3}
+              >
+                <option value="">Select Grade</option>
+                {grades.map((grade) => (
+                  <option key={grade} value={grade}>
+                    {grade}
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Section Filter (visible only after grade is selected) */}
-            {selectedGrade && (
-                <select
-                  value={selectedSection}
-                  onChange={(e) => setSelectedSection(e.target.value)}
-                >
-                  <option value="">Select Section</option>
-                  {sections.map((section) => (
-                    <option key={section} value={section}>
-                      {section.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
-            )}
+            {loggedInUser?.userType === 3 ? (
+              // If the user is an Adviser, show their section as a disabled option
+              <select value={loggedInUser.section} disabled>
+                <option value={loggedInUser.section}>{loggedInUser.section}</option>
+              </select>
+            ) : selectedGrade ? (
+              <select
+                value={selectedSection}
+                onChange={(e) => setSelectedSection(e.target.value)}
+                disabled={loggedInUser?.userType === 3}
+              >
+                <option value="">Select Section</option>
+                {sections.map((section) => (
+                  <option key={section} value={section}>
+                    {section.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+
+
           </label>
 
           <div>
@@ -298,14 +344,18 @@ const StudentList = () => {
                             setShowStudentDetailsModal(true); // Open the modal
                           }}
                         />
-                        <EditNoteIcon
-                          className={buttonStyles['action-icon']}
-                          onClick={() => handleEditStudent(student)}
-                        />
-                        <DeleteIcon
-                          className={buttonStyles['action-icon']}
-                          onClick={() => handleDeleteStudent(student.id)}
-                        />
+                        {loggedInUser?.userType !== 3 && (
+                          <>
+                            <EditNoteIcon
+                              className={buttonStyles['action-icon']}
+                              onClick={() => handleEditStudent(student)}
+                            />
+                            <DeleteIcon
+                              className={buttonStyles['action-icon']}
+                              onClick={() => handleDeleteStudent(student.id)}
+                            />
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))
