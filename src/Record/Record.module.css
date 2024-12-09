@@ -186,7 +186,7 @@
   word-wrap: break-word; /* Ensure long words wrap onto the next line */
   word-break: break-word; /* For compatibility with different browsers */
   width: 25%; /* Adjust the width to make the column longer */
-  text-align: left; /* Optional: Align text to the left for readability */
+  text-align: justify; /* Optional: Align text to the left for readability */
 }
 
 /* .record-table td:nth-child(5), 

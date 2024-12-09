@@ -130,6 +130,7 @@ const Navigation = ({ loggedInUser }) => {
            /* SSO - usertype 1 */}
           {loggedInUser.userType === 1 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/student', 'Student', SchoolIcon)}
+          {loggedInUser.userType === 1 && createSidebarLink('/StudentList', 'Student List', AssignmentIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/record', 'Record', PostAddIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/suspension', 'Suspension', LocalPoliceIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/activitylog', 'Activity Log', AccessTimeIcon)}

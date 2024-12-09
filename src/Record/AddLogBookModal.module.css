@@ -69,6 +69,10 @@
   width: 5%;
 }
 
+.logbook-table td:nth-child(2) {
+  text-align: left;
+}
+
 .logbook-table td.clickableCell {
   background-color: #f9f9f9;
   cursor: pointer;

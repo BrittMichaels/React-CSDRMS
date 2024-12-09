@@ -46,6 +46,7 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 1 && (
             <>
+              <Route path="/StudentList" element={<PrivateRoute element={<StudentList />} />} />
               <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 

@@ -9,15 +9,11 @@ import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm sty
 
 import Navigation from '../Components/Navigation';
 import StudentFilter from './StudentFilter'; 
-import ImportModal from './StudentImportModal'; // Import ImportModal component
-import AddStudentModal from './AddStudentModal';
 import AddRecordModal from '../Record/AddRecordModal'; // Import AddRecordModal component
 import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
 import RecordStudentEditModal from '../Record/EditRecordModal';
 import RecordStudentViewModal from '../Record/ViewRecordModal'; // Import the view modal
 
-import AddStudentIcon from '@mui/icons-material/PersonAdd';
-import ImportIcon from '@mui/icons-material/FileDownload';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
@@ -36,8 +32,6 @@ const Student = () => {
   const [selectedMonth, setSelectedMonth] = useState(''); 
   const [selectedWeek, setSelectedWeek] = useState('');
   const [showAddRecordModal, setShowAddRecordModal] = useState(false); // Modal visibility state
-  const [showImportModal, setShowImportModal] = useState(false); // Control ImportModal visibility
-  const [showAddStudentModal, setShowAddStudentModal] = useState(false); 
   const [showEditRecordModal, setShowEditRecordModal] = useState(false); // Modal visibility state
   const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State to control view modal
   const [recordToEdit, setRecordToEdit] = useState(null); // Hold the record to edit
@@ -114,17 +108,15 @@ const Student = () => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         // Close the respective modals when the 'Esc' key is pressed
-        if (showAddStudentModal) setShowAddStudentModal(false);
         if (showEditRecordModal) setShowEditRecordModal(false);
         if (showViewRecordModal) setShowViewRecordModal(false);
         if (showAddRecordModal) setShowAddRecordModal(false);
-        if (showImportModal) setShowImportModal(false);
         if (showEditStudentModal) setShowEditStudentModal(false);
       }
     };
   
     // Attach the event listener when any modal is open
-    if (showAddStudentModal || showEditRecordModal || showViewRecordModal || showAddRecordModal || showImportModal || showEditStudentModal) {
+    if (showEditRecordModal || showViewRecordModal || showAddRecordModal || showEditStudentModal) {
       window.addEventListener('keydown', handleKeyDown);
     }
   
@@ -132,7 +124,7 @@ const Student = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showAddStudentModal, showEditRecordModal, showViewRecordModal, showAddRecordModal, showImportModal, showEditStudentModal]);
+  }, [showEditRecordModal, showViewRecordModal, showAddRecordModal, showEditStudentModal]);
   
   
 
@@ -272,23 +264,7 @@ const Student = () => {
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>  
         <div className={navStyles.TitleContainer}>
-          <h2 className={navStyles['h1-title']}>Student Overview</h2>
-          <div className={buttonStyles['button-group']}>
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowAddStudentModal(true)} 
-                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}>
-                <AddStudentIcon />Add Student
-              </button>
-            )}     
-
-            {/* Button to open Import Modal */}
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowImportModal(true)} 
-                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}>
-                <ImportIcon />Import Student
-              </button>
-            )}    
-          </div>                
+          <h2 className={navStyles['h1-title']}>Student Overview</h2>            
         </div>  
 
         <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
@@ -419,21 +395,6 @@ const Student = () => {
             
           </div>    
         </div>   
-
-        {/* Import Modal */}
-        {showImportModal && (
-          <ImportModal
-            onClose={() => setShowImportModal(false)}
-            schoolYears={schoolYears}
-          />
-        )}
-
-        {showAddStudentModal && ( 
-          <AddStudentModal
-            open={showAddStudentModal}
-            onClose={() => setShowAddStudentModal(false)}
-          />    
-        )}
       
         {/* Add Record Modal */}
         {showAddRecordModal && (

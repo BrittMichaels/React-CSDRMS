@@ -67,41 +67,55 @@ const Record = () => {
         }, [loggedInUser]);
 
 
-    const handleExportToPDF = async () => {
-        const element = exportRef.current;
-
-        // Capture the element as an image using html2canvas
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL('image/png');
-
-        // Create jsPDF document with long bond paper size
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [216, 330], // Long bond paper size in mm
-        });
-
-        // Define margins and calculate content dimensions
-        const marginTop = 20; // Top margin in mm
-        const marginLeft = 10; // Left margin in mm
-        const pdfWidth = 216 - 2 * marginLeft; // Width adjusted for margins
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
-
-        // Add title and custom header (optional)
-        pdf.setFontSize(16);
-        pdf.text('Student Records', marginLeft, marginTop - 10);
-
-        // Add the image content with margins
-        pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeight);
-
-        // Optional footer
-        pdf.setFontSize(10);
-        pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 330 - 10); // Bottom left corner
-
-        // Save the PDF
-        pdf.save('Records.pdf');
-    };
-
+        const handleExportToPDF = async () => {
+            const element = exportRef.current;
+        
+            const exportButton = document.getElementById('exportToPDFButton');
+            let originalDisplay = '';
+        
+            if (exportButton) {
+                // Save original display value
+                originalDisplay = getComputedStyle(exportButton).display;
+                // Hide the export button
+                exportButton.style.display = 'none';
+            }
+        
+            // Capture the element as an image using html2canvas
+            const canvas = await html2canvas(element);
+            const imgData = canvas.toDataURL('image/png');
+        
+            if (exportButton) {
+                // Restore the original display value
+                exportButton.style.display = originalDisplay;
+            }
+        
+            // Create jsPDF document
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [216, 279], // Letter size in mm
+            });
+        
+            // Define margins and content dimensions
+            const topMargin = 15;
+            const sideMargin = 27.4;
+            const pdfContentWidth = 216 - 2 * sideMargin;
+            const pdfContentHeight = 279 - topMargin - sideMargin;
+            const imgHeight = (canvas.height * pdfContentWidth) / canvas.width;
+            const adjustedImgHeight = Math.min(imgHeight, pdfContentHeight);
+        
+            // Add content to the PDF
+            pdf.addImage(imgData, 'PNG', sideMargin, topMargin, pdfContentWidth, adjustedImgHeight);
+        
+            // Footer
+            pdf.setFontSize(10);
+            pdf.text('Generated on: ' + new Date().toLocaleDateString(), sideMargin, 279 - sideMargin + 5);
+        
+            // Save PDF
+            pdf.save('Records.pdf');
+        };
+        
+        
     // Fetch initial data (records, classes, school years, unique grades)
     useEffect(() => {
         const fetchData = async () => {
@@ -408,6 +422,7 @@ const Record = () => {
 
                         <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
                             <button 
+                                id="exportToPDFButton"
                                 className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
                                 onClick={handleExportToPDF}>
                                 <ExportIcon /> Export to PDF

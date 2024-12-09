@@ -52,7 +52,7 @@ const StudentList = () => {
       let response;
       const userType = loggedInUser.userType;
 
-      if (userType === 4) {
+      if (userType === 1 || userType === 4) {
         // Admin: Fetch all current students
         response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
       } else if (userType === 3){
@@ -200,7 +200,7 @@ const StudentList = () => {
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Student List</h2>
           <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
-            {loggedInUser.userType === 4 && (
+            {loggedInUser.userType !== 3 && (
               <>
                 <button
                   onClick={() => setShowAddStudentModal(true)}
@@ -215,7 +215,7 @@ const StudentList = () => {
                   className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
                 >
                   <ImportIcon />
-                  Import Student
+                  Import Students
                 </button>
               </>
             )}
@@ -224,7 +224,7 @@ const StudentList = () => {
         
         <div className={styles['filter-container']}>
           <label>Filter by: 
-            {loggedInUser?.userType === 4 && (
+            {loggedInUser?.userType !== 3 && (
               <select
                 value={selectedSchoolYear}
                 onChange={(e) => setSelectedSchoolYear(e.target.value)}
@@ -242,7 +242,7 @@ const StudentList = () => {
             {loggedInUser?.userType === 3 ? (
               // If the user is an Adviser, show their grade as a disabled option
               <select value={loggedInUser.grade} disabled>
-                <option value={loggedInUser.grade}>{loggedInUser.grade}</option>
+                <option value={loggedInUser.grade}>Grade {loggedInUser.grade}</option>
               </select>
             ) : (
               <select
@@ -256,7 +256,7 @@ const StudentList = () => {
                 <option value="">Select Grade</option>
                 {grades.map((grade) => (
                   <option key={grade} value={grade}>
-                    {grade}
+                    Grade {grade}
                   </option>
                 ))}
               </select>

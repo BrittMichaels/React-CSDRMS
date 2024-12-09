@@ -275,7 +275,7 @@ const Record = () => {
               {filteredRecords.length > 0 ? (
                 filteredRecords.map((record) => (
                   <tr key={record.recordId}>
-                    <td>{record.student.name}</td>
+                    <td style={{textAlign: 'center'}}>{record.student.name}</td>
                     <td>{record.record_date}</td>
                     <td>{record.monitored_record || 'N/A'}</td>
                     {/* <td
@@ -317,12 +317,12 @@ const Record = () => {
                       <ViewNoteIcon
                         className={buttonStyles['action-icon']}
                         onClick={() => openViewModal(record)}
-                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                        style={{ marginRight: loggedInUser?.userType === 1 ? '15px' : '0' }}
                       />
                       <EditNoteIcon
                         className={buttonStyles['action-icon']}
                         onClick={() => openEditModal(record)}
-                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                        style={{ marginRight: loggedInUser?.userType === 1 ? '15px' : '0' }}
                       />
                       <DeleteIcon
                         className={buttonStyles['action-icon']}

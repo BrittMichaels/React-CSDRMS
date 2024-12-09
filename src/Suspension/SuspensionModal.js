@@ -10,7 +10,7 @@ import buttonStyles from "../GlobalButton.module.css";
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import Imagesso from './Image-jhssso.png';
+import Imagesso from './Image-jhssso1.png';
 
 const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   const authToken = localStorage.getItem('authToken');
