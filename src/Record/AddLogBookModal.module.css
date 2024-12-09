@@ -1,0 +1,157 @@
+.logbook-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.logbook-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 1500px;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.table-container {
+    max-height: 100%; /* Adjust height as needed */
+    width: 100%;
+    overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
+    border: 2px solid #8A252C;
+  }
+
+  .logbook-table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures borders are not doubled */
+    table-layout: fixed; /* Ensures consistent cell width */
+  }
+  
+  .logbook-table thead th {
+    position: sticky; /* Sticky header */
+    top: 0; /* Stick to the top */
+    z-index: 1; /* Ensure header stays on top of scrolling body */
+    background-color: #8A252C; /* Keep background color to prevent overlapping with content */
+    color: white; /* White text for headers */
+    text-shadow: 3px 3px 5px #000;  /* Slight shadow for text */
+    font-weight: 600;
+    border: none;
+  }
+  
+  .logbook-table th, .logbook-table td {
+    padding: 10px;
+    font-size: 14px; /* Larger font size for readability */
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .logbook-table td {
+    padding: 10px;
+    font-size: 12px; /* Larger font size for readability */
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: center; /* Center align table data */
+    cursor: pointer; /* Pointer cursor for rows */
+  }
+
+
+.logbook-table td.clickableCell {
+    background-color: #f9f9f9; 
+}
+
+.logbook-table td.clickableCell:hover {
+    background-color: #dfe6e9;
+    transition: background-color 0.2s ease-in-out;
+}
+
+  .logbook-table td:nth-child(2), 
+.logbook-table th:nth-child(2) {
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Ensure long words wrap onto the next line */
+  word-break: break-word; /* For compatibility with different browsers */
+  width: 20%; /* Adjust the width to make the column longer */
+  text-align: left; /* Optional: Align text to the left for readability */
+}
+  
+  
+  .logbook-table tr {
+    background-color:#fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow to create "floating" effect */
+  }
+  
+  .logbook-table tr:hover {
+    background-color: #f4f6f9; /* Highlighted row color on hover */
+  }
+
+  .filterContainer select {
+    /* padding: 10px; Reduced padding for a tighter look */
+    font-size: 14px; /* Adjust font size */
+    border: 1px solid #ccc; /* Consistent border */
+    border-radius: 4px; /* Smooth edges */
+    background-color: #fff; /* White background */
+    color: #414141; /* Darker text color for contrast */
+    width: auto; /* Adjusts width based on content */
+    text-align: center; /* Center the text inside the select */
+    margin-left: 10px; /* Removed unnecessary left margin */
+    position: relative;
+  }
+  
+  .filterContainer {
+    margin-top: 10px;
+    max-width: 100%; /* Ensures it doesn't exceed the parent container's width */
+    display: flex; /* Added flexbox to control layout */
+    gap: 10px; /* Space between individual filters */
+    flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
+    text-align: center;
+  }
+
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+  
+.pagination button {
+    color: #fff;
+    background-color: #8A252C;
+    text-shadow: 1px 1px 3px #808080;  /* Slight shadow for all text */
+    border: 2px solid #8A252C;
+    padding: 6px 12px;
+    margin: 0 8px;
+    cursor: pointer;
+    font-size: 20px; /* Slightly larger font for better readability */
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    border-radius: 4px; /* Slightly softer border-radius */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500; /* Subtle weight for better text clarity */
+}
+  
+.pagination button:disabled {
+    background-color: #ddd;
+    color: #808080;
+    cursor: not-allowed;
+    border: 2px solid #ddd;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #8A252C;
+    color: white;
+    transform: scale(1.1);
+}
+  
+.pagination span {
+    font-size: 14px;
+    font-weight: bold;
+}

@@ -9,6 +9,8 @@ import Navigation from '../Components/Navigation';
 import AddRecordModal from './AddRecordModal';
 import RecordStudentEditModal from './EditRecordModal';
 import ViewRecordModal from './ViewRecordModal';
+import AddLogBookModal from './AddLogBookModal'; 
+
 
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
@@ -21,6 +23,7 @@ const Record = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddLogBookModal, setShowAddLogBookModal] = useState(false); // ✅ State for AddLogBookModal
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [filterType, setFilterType] = useState('All'); // Default filter is "All"
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
@@ -109,6 +112,10 @@ const Record = () => {
     setShowViewModal(false);
   };
 
+  const openAddLogBookModal = () => setShowAddLogBookModal(true); 
+  const closeAddLogBookModal = () => setShowAddLogBookModal(false); 
+
+
   const handleDelete = (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       axios
@@ -162,9 +169,19 @@ const Record = () => {
               : loggedInUser?.userType === 2 || loggedInUser?.userType === 6
               ? 'Complaint List'
               : 'Student Records From Complaints'}
-          </h2>         
+          </h2>
+
+             
           
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
+          {loggedInUser?.userType === 1 && (
+            <button
+                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+                onClick={openAddLogBookModal}
+              >
+                <AddIcon /> Add LogBook
+              </button>
+          )}
             <button
                 className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
                 onClick={openAddModal}
@@ -307,6 +324,13 @@ const Record = () => {
           refreshRecords={fetchRecords}
         />
       )}
+
+      {showAddLogBookModal && (
+        <AddLogBookModal isOpen={showAddLogBookModal} onClose={closeAddLogBookModal} records={records}  />
+      )}
+
+
+      
     </div>
   );
 };
