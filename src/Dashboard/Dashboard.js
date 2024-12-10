@@ -112,7 +112,7 @@ const Record = () => {
             pdf.text('Generated on: ' + new Date().toLocaleDateString(), sideMargin, 279 - sideMargin + 5);
         
             // Save PDF
-            pdf.save('Records.pdf');
+            pdf.save('JHS-Monitored-Records.pdf');
         };
         
         
@@ -504,9 +504,9 @@ const Record = () => {
                                         <th>Tardy</th>
                                         <th>Cutting Classes</th>
                                         <th>Improper Uniform</th>
-                                        <th>Offense</th>
-                                        <th>Misbehavior</th>
-                                        <th>Clinic</th>
+                                        <th>Handbook Offense</th> {/*OFFENSE || Policy Violation */}
+                                        <th>Classroom Misconduct</th> {/*MISBEHAVIOR*/}
+                                        <th>Clinic Visit</th> {/*CLINIC*/}
                                         <th>Request Permit</th>
                                         <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                     </tr>
@@ -514,7 +514,7 @@ const Record = () => {
                                 <tbody>
                                     {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
                                         <tr key={grade}>
-                                            {selectedGrade && selectedSection ? null :<td>{grade}</td>}
+                                            {selectedGrade && selectedSection ? null :<td>Grade - {grade}</td>}
                                             <td>{frequencies ? frequencies.Absent : 0}</td>
                                             <td>{frequencies ? frequencies.Tardy : 0}</td>
                                             <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>

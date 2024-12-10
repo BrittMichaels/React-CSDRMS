@@ -10,7 +10,7 @@ import buttonStyles from "../GlobalButton.module.css";
 
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import Imagesso from './Image-jhssso1.png';
+import Imagesso from './Image-jhssso.png';
 
 const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   const authToken = localStorage.getItem('authToken');
@@ -79,7 +79,6 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   
     // Letter size dimensions (8.5 x 11 inches), converted to mm
     const pdfWidth = 215.9 - marginLeft - marginRight; // Width adjusted for margins
-    const pdfHeight = 279.4 - marginTop - marginBottom; // Height adjusted for margins
   
     // Maintain aspect ratio of the content
     const canvasRatio = canvas.width / canvas.height;
@@ -140,7 +139,7 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
           <p>
             I would like to submit the recommendation for the suspension of 
             <strong> {suspension.record.student.name} </strong> 
-            of <strong>{suspension.record.student.grade} - {suspension.record.student.section}</strong> for 
+            of <strong>Grade {suspension.record.student.grade} - {suspension.record.student.section}</strong> for 
             <strong> {suspension.days}</strong> days, starting 
             <strong> {suspension.startDate}</strong> until 
             <strong> {suspension.endDate}</strong>.

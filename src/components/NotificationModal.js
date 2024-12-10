@@ -81,9 +81,8 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
                         e.stopPropagation(); // Prevent the modal from opening when the delete button is clicked
                         handleDeleteNotification(notification.userNotificationId);
                       }}
-                      style={{
-                        color: '#8A252C'
-                      }}
+                      className={styles['delete-icon']}
+                      style={{color: '#8A252C'}}
                     />
                   </div>
                 </li>
