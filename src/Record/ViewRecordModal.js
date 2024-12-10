@@ -131,7 +131,7 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Encoder</strong></td>
               <td><strong>:</strong></td>
-              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
+              <td>{`${record?.encoder || 'N/A'}`}</td>
             </tr>
           </tbody>
         </table>

@@ -17,8 +17,10 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import ImportIcon from '@mui/icons-material/CloudUpload';
+import Loader from '../Loader';
 
-const Record = () => {
+const Record = () => { 
   const [records, setRecords] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -29,6 +31,9 @@ const Record = () => {
   const [monitoredRecordFilter, setMonitoredRecordFilter] = useState('All');
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
   const [searchQuery, setSearchQuery] = useState('');
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
@@ -68,12 +73,12 @@ const Record = () => {
         grade: loggedInUser.grade,
         section: loggedInUser.section,
         schoolYear: loggedInUser.schoolYear,
-        encoderId: loggedInUser.userId,
+        userId: loggedInUser.userId,
       };
     } else if ([5, 6, 2].includes(loggedInUser.userType)) {
-      url = 'http://localhost:8080/record/getAllRecordsByEncoderId';
+      url = 'http://localhost:8080/record/getAllRecordsByUserId';
       params = {
-        encoderId: loggedInUser.userId,
+        userId: loggedInUser.userId,
       };
     } else if (loggedInUser.userType === 1) {
       url = 'http://localhost:8080/record/getAllRecords';
@@ -131,6 +136,42 @@ const Record = () => {
         });
     }
   };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  // Handle file upload
+  const handleFileUpload = () => {
+    if (!file) {
+      alert('Please select a file first');
+      return;
+    }
+
+    setLoading(true); 
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Sending the file to the backend for import
+    axios
+      .post(`http://localhost:8080/record/import/${loggedInUser.userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        alert('File uploaded and records imported successfully');
+      })
+      .catch((error) => {
+        console.error('Error importing records:', error);
+        alert('Failed to upload file: ' + error.message);
+      })
+      .finally(() => {
+        setLoading(false); // Hide loading indicator after the upload is complete or fails
+      });
+  };
+
 
   const monitoredRecordsList = [
     'Absent',
@@ -195,12 +236,32 @@ const Record = () => {
 
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
           {loggedInUser?.userType === 1 && (
+          <>
             <button
                 className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
                 onClick={openAddLogBookModal}
               >
                 <AddIcon /> Add Log Book
               </button>
+
+                <input
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                id="file-upload"
+                />
+                <label htmlFor="file-upload" className={buttonStyles['action-button']}>
+                <ImportIcon /> Import Records (Excel)
+                </label>
+
+                <button
+                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+                onClick={handleFileUpload}
+                >
+                Upload & Import
+                </button>
+            </>
           )}
             <button
                 className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
@@ -315,7 +376,7 @@ const Record = () => {
                     <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
                     {/* <td>{record.sanction}</td> */}
                     <td>
-                      {record.encoder.firstname} {record.encoder.lastname}
+                      {record.encoder}
                     </td>
                     <td>
                       <ViewNoteIcon
@@ -362,8 +423,8 @@ const Record = () => {
         <AddLogBookModal isOpen={showAddLogBookModal} onClose={closeAddLogBookModal} refreshRecords={fetchRecords}  />
       )}
 
+{loading && <div className={styles.loaderOverlay}><Loader /></div>}
 
-      
     </div>
   );
 };

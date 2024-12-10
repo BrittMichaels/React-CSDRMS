@@ -192,14 +192,15 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
       const recordRemarks = remarks[key]; // Get remarks for the record
       return monitoredRecords.map(monitored_record => ({
         id: parseInt(studentId),
-        encoderId: loggedInUser.userId,
+        userId: loggedInUser.userId,
         record_date: selectedDate,  // Use selectedDate here
         incident_date: selectedDate,  // Use selectedDate here
         monitored_record,
         period: parseInt(period),
         source: 1, 
         complete: 0,
-        remarks: recordRemarks || '' // Include remarks in the payload
+        remarks: recordRemarks || '', // Include remarks in the payload
+        encoder: `${loggedInUser.firstname} ${loggedInUser.lastname}`,
       }));
     });
 

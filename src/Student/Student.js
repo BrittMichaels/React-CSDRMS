@@ -458,7 +458,7 @@ const Student = () => {
                       <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
                       <td>{record.monitored_record}</td>
                       <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
-                      <td>{record.encoder.firstname} {record.encoder.lastname}</td>
+                      <td>{record.encoder}</td>
                       <td>
                         <ViewNoteIcon
                           onClick={() => {

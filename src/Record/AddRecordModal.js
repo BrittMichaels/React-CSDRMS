@@ -73,13 +73,14 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
     const newRecord = {
       id: student?.id || selectedStudent?.id,
-      encoderId: loggedInUser.userId,
+      userId: loggedInUser.userId,
       name: student?.name || selectedStudent?.name,
       record_date: recordDate,
       incident_date: incidentDate,
       time: time,
       monitored_record: monitoredRecord,
       remarks: finalRemarks,  // Use the final value of remarks
+      encoder: `${loggedInUser.firstname} ${loggedInUser.lastname}`,
       complainant: complainant,
       complaint: complaint,
       source: source,
