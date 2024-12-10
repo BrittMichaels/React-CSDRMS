@@ -56,6 +56,11 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   }, []);
 
   const handleSubmit = async () => {
+    if (!student && !selectedStudent) {
+      alert('Please select a student before submitting.');
+      return;
+    }
+    
     if (!recordDate || !incidentDate || !monitoredRecord || !source) {
       alert('Please fill in all required fields.');
       return;

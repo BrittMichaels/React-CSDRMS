@@ -219,7 +219,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   };
 
   return (
-    <div className={styles['logbook-modal-overlay']} style={{ display: isOpen ? 'block' : 'none' }}>
+    <div className={styles['logbook-modal-overlay']}>
       <div className={styles['logbook-modal-content']}>
         <h2 className={styles.modalTitle}>Add Log Book</h2>
 

@@ -175,7 +175,7 @@ const Suspensions = () => {
                     <th>Date Submitted</th>
                     <th>Days Of Suspension</th>
                     <th>Suspension</th>
-                    <th style={{borderRight: '0.5px solid #8A252C'}}>Action</th>
+                    <th style={{borderRight: '0.5px solid #8A252C'}}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>

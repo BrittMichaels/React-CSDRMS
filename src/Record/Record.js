@@ -224,7 +224,11 @@ const Record = () => {
               ))}
             </select>
             
-            <select onChange={(e) => setFilterType(e.target.value)} value={filterType} disabled={loggedInUser?.userType === 5 || loggedInUser?.userType === 6}>
+            <select 
+              onChange={(e) => setFilterType(e.target.value)} 
+              value={filterType} 
+              disabled={loggedInUser?.userType === 2 || loggedInUser?.userType === 5 || loggedInUser?.userType === 6}
+              >
               <option value="All">All Sources</option>
               <option value="Log Book">Log Book</option>
               <option value="Complaint">Complaint</option>

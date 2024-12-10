@@ -314,20 +314,14 @@ const Record = () => {
                 {
                     label: 'Improper Uniform',
                     data: labels.map(label => monthlyData[label]?.['Improper Uniform'] || 0),
-                    borderColor: '#00FF00',  // Green
-                    backgroundColor: '#00FF00', // Light Green
+                    borderColor: '#008000',  // Green
+                    backgroundColor: '#008000', // Green
                 },
                 {
                     label: 'Offense',
                     data: labels.map(label => monthlyData[label]?.Offense || 0),
                     borderColor: '#0000FF',  // Blue
                     backgroundColor: '#0000FF', // Light Blue
-                },
-                {
-                    label: 'Misbehavior',
-                    data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
-                    borderColor: '#4B0082',  // Indigo
-                    backgroundColor: '#4B0082', // Light Indigo
                 },
                 {
                     label: 'Clinic',
@@ -349,64 +343,106 @@ const Record = () => {
                 },
             ];
         
+            // Conditionally add 'Misbehavior' dataset or combine 'Offense' and 'Misbehavior' data for userType === 2
+            if (loggedInUser.userType !== 2) {
+                datasets.splice(5, 0, { // Insert 'Misbehavior' after 'Offense'
+                    label: 'Misbehavior',
+                    data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
+                    borderColor: '#4B0082',  // Indigo
+                    backgroundColor: '#4B0082', // Light Indigo
+                });
+            } else {
+                // If userType is 2, combine 'Offense' and 'Misbehavior' data into 'Offense'
+                datasets[4].data = labels.map((label, index) => {
+                    return (monthlyData[label]?.Offense || 0) + (monthlyData[label]?.Misbehavior || 0);
+                });
+                datasets[4].label = 'Offense'; // Update the label to reflect combined data
+            }
+        
             return { labels, datasets };
         };
         
-
+        
         const getChartPieData = () => {
+            // Define the labels and dataset order
+            const labels = [
+                'Absent',
+                'Tardy',
+                'Cutting Classes',
+                'Improper Uniform',
+                'Clinic',
+                'Request Permit',
+                'Sanction',
+            ];
+        
+            // Define the colors for the chart
+            const backgroundColors = [
+                '#FF0000', // Absent (Red)
+                '#FF7F00', // Tardy (Orange)
+                '#FFFF00', // Cutting Classes (Yellow)
+                '#008000', // Improper Uniform (Green)
+                '#9400D3', // Clinic (Violet)
+                'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                '#000000', // Request Permit (Black)
+            ];
+        
+            const borderColors = [
+                '#FF0000', // Absent (Red)
+                '#FF7F00', // Tardy (Orange)
+                '#FFFF00', // Cutting Classes (Yellow)
+                '#008000', // Improper Uniform (Green)
+                '#9400D3', // Clinic (Violet)
+                'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                '#000000', // Request Permit (Black)
+            ];
+        
+            // Initialize the dataset with the required frequency sums
+            const data = [
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Absent, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Tardy, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Cutting Classes'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Improper Uniform'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Clinic, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Request Permit'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Sanction, 0),
+            ];
+        
+            // Conditionally add 'Offense' and 'Misbehavior' data if the user is not type 2
+            if (loggedInUser.userType !== 2) {
+                labels.splice(4, 0, 'Offense', 'Misbehavior'); // Insert 'Offense' and 'Misbehavior' after 'Improper Uniform'
+                backgroundColors.splice(4, 0, '#0000FF', '#4B0082'); // Add respective colors
+                borderColors.splice(4, 0, '#0000FF', '#4B0082'); // Add respective border colors
+                data.splice(4, 0,
+                    Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense, 0),
+                    Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Misbehavior, 0)
+                );
+            } else {
+                // If userType is 2, combine Offense and Misbehavior into Offense
+                labels.splice(4, 1, 'Offense'); // Replace 'Offense' label at index 4
+                backgroundColors.splice(4, 1, '#0000FF'); // Replace the color for 'Offense'
+                borderColors.splice(4, 1, '#0000FF'); // Replace the border color for 'Offense'
+        
+                // Combine 'Offense' and 'Misbehavior' data
+                const combinedOffenseMisbehavior = Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense + frequencies.Misbehavior, 0);
+                data.splice(4, 1, combinedOffenseMisbehavior); // Replace the data at index 4 with the combined value
+            }
+        
+            // Return the pie chart data object
             const pieData = {
-                labels: [
-                    'Absent',
-                    'Tardy',
-                    'Cutting Classes',
-                    'Improper Uniform',
-                    'Offense',
-                    'Misbehavior',
-                    'Clinic',
-                    'Request Permit',
-                    'Sanction',
-                ],
+                labels,
                 datasets: [
                     {
-                        data: [
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Absent, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Tardy, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Cutting Classes'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Improper Uniform'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Misbehavior, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Clinic, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Request Permit'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Sanction, 0),
-                        ],
-                        backgroundColor: [
-                            '#FF0000', // Absent (Red)
-                            '#FF7F00', // Tardy (Orange)
-                            '#FFFF00', // Cutting Classes (Yellow)
-                            '#008000', // Improper Uniform (Green)
-                            '#0000FF', // Offense (Blue)
-                            '#4B0082', // Misbehavior (Indigo)
-                            '#9400D3', // Clinic (Violet)
-                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
-                            '#000000', // Request Permit (Black)
-                        ],
-                        borderColor: [
-                            '#FF0000', // Absent (Red)
-                            '#FF7F00', // Tardy (Orange)
-                            '#FFFF00', // Cutting Classes (Yellow)
-                            '#008000', // Improper Uniform (Green)
-                            '#0000FF', // Offense (Blue)
-                            '#4B0082', // Misbehavior (Indigo)
-                            '#9400D3', // Clinic (Violet)
-                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
-                            '#000000', // Request Permit (Black)
-                        ],
+                        data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
                         borderWidth: 1,
                     },
                 ],
             };
+        
             return pieData;
         };
+        
         
         const handleChartTypeChange = (e) => {
             setSelectedChartType(e.target.value);
@@ -504,8 +540,17 @@ const Record = () => {
                                         <th>Tardy</th>
                                         <th>Cutting Classes</th>
                                         <th>Improper Uniform</th>
-                                        <th>Offense</th> {/*OFFENSE || Policy Violation */}
-                                        <th>Misbehavior</th> {/*MISBEHAVIOR*/}
+                                        {loggedInUser && loggedInUser.userType !== 2 && (
+                                            <>
+                                                <th>Offense</th> {/* OFFENSE || Policy Violation */}
+                                                <th>Misbehavior</th> {/* MISBEHAVIOR */}
+                                            </>
+                                        )}
+                                        {loggedInUser && loggedInUser.userType === 2 && (
+                                            <>
+                                                <th>Offense</th> {/* OFFENSE || Policy Violation */}
+                                            </>
+                                        )}
                                         <th>Clinic</th> {/*CLINIC*/}
                                         <th>Request Permit</th>
                                         <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
@@ -519,8 +564,17 @@ const Record = () => {
                                             <td>{frequencies ? frequencies.Tardy : 0}</td>
                                             <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
                                             <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                            <td>{frequencies ? frequencies.Offense : 0}</td>
-                                            <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                            {loggedInUser && loggedInUser.userType !== 2 && (
+                                                <>
+                                                    <td>{frequencies ? frequencies.Offense : 0}</td>
+                                                    <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                                </>
+                                            )}
+                                            {loggedInUser && loggedInUser.userType === 2 && (
+                                                <>
+                                                    <td>{(frequencies ? frequencies.Offense : 0) + (frequencies ? frequencies.Misbehavior : 0)}</td>
+                                                </>
+                                            )}                                            
                                             <td>{frequencies ? frequencies.Clinic : 0}</td>
                                             <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
                                             <td>{frequencies ? frequencies.Sanction : 0}</td>
