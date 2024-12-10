@@ -184,7 +184,7 @@ const Suspensions = () => {
                       <tr>
                         <td style={{ width: '350px' }}>{suspension.record.student.name}</td>  
                         <td>{suspension.record.student.grade} - {suspension.record.student.section}</td>             
-                        <td>{suspension.dateSubmitted}</td>
+                        <td>{suspension.dateSubmitted ? new Date(suspension.dateSubmitted).toLocaleDateString('en-US') : 'N/A'}</td>  
                         <td>{suspension.days} Days</td>
                         <td style={{ fontWeight: 'bold', color: suspension.approved ? '#4caf50' : '#e53935' }}>
                           {suspension.approved ? 'Approved' : 'Not Approved'}

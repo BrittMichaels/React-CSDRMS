@@ -54,7 +54,7 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Record Date</strong></td>
               <td><strong>:</strong></td>
-              <td>{record.record_date || 'N/A'}</td>
+              <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
             </tr>
             <tr>
               <td><strong>Time</strong></td>

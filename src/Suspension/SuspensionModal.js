@@ -141,13 +141,13 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
             <strong> {suspension.record.student.name} </strong> 
             of <strong>Grade {suspension.record.student.grade} - {suspension.record.student.section}</strong> for 
             <strong> {suspension.days}</strong> days, starting 
-            <strong> {suspension.startDate}</strong> until 
-            <strong> {suspension.endDate}</strong>.
+            <strong> {new Date(suspension.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong> until 
+            <strong> {new Date(suspension.endDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.</strong>
           </p>
 
           <p>
             This disciplinary action is given to him/her for infractions/violations of school and department policies, rules, and regulations as proven after investigation. He/She will be made to report back to his/her classes on 
-            <strong> {suspension.returnDate}</strong>.
+            <strong> {new Date(suspension.returnDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>.
           </p>
 
           {/* Offense */}

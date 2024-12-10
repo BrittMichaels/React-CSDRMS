@@ -319,14 +319,9 @@ const Student = () => {
                     </td>     
                   </tr>
                   <tr>
-                    <td><strong>Grade</strong></td>
+                    <td><strong>Grade & Section</strong></td>
                     <td><strong>:</strong></td>
-                    <td>{selectedStudent?.grade || 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Section</strong></td>
-                    <td><strong>:</strong></td>
-                    <td>{selectedStudent?.section || 'N/A'}</td>
+                    <td>{selectedStudent?.grade && selectedStudent?.section ? `${selectedStudent.grade} - ${selectedStudent.section}` : 'N/A'}</td>
                   </tr>
                   <tr>
                     <td><strong>Adviser</strong></td>
@@ -460,7 +455,7 @@ const Student = () => {
                 ) : (
                   filteredRecords.map((record) => (
                     <tr key={record.recordId}>
-                      <td>{record.record_date}</td>
+                      <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
                       <td>{record.monitored_record}</td>
                       <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
                       <td>{record.encoder.firstname} {record.encoder.lastname}</td>

@@ -504,9 +504,9 @@ const Record = () => {
                                         <th>Tardy</th>
                                         <th>Cutting Classes</th>
                                         <th>Improper Uniform</th>
-                                        <th>Handbook Offense</th> {/*OFFENSE || Policy Violation */}
-                                        <th>Classroom Misconduct</th> {/*MISBEHAVIOR*/}
-                                        <th>Clinic Visit</th> {/*CLINIC*/}
+                                        <th>Offense</th> {/*OFFENSE || Policy Violation */}
+                                        <th>Misbehavior</th> {/*MISBEHAVIOR*/}
+                                        <th>Clinic</th> {/*CLINIC*/}
                                         <th>Request Permit</th>
                                         <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                     </tr>
@@ -548,7 +548,7 @@ const Record = () => {
                                             <th>Misbehavior</th>
                                             <th>Clinic</th>
                                             <th>Request Permit</th>
-                                            <th>Sanction</th>
+                                            <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                         </tr>
                                     </thead>
                                     <tbody>

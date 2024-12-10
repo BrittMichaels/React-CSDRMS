@@ -275,8 +275,8 @@ const Record = () => {
               {filteredRecords.length > 0 ? (
                 filteredRecords.map((record) => (
                   <tr key={record.recordId}>
-                    <td style={{textAlign: 'center'}}>{record.student.name}</td>
-                    <td>{record.record_date}</td>
+                    <td style={{textAlign: 'left'}}>{record.student.name}</td>
+                    <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
                     <td>{record.monitored_record || 'N/A'}</td>
                     {/* <td
                       style={{
