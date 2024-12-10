@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './PeriodDetailModal.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 
@@ -9,20 +9,49 @@ const options = [
   'Improper Uniform',
 ];
 
-const PeriodDetailModal = ({ student, period, onClose }) => {
+const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onClose }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [remarks, setRemarks] = useState(''); // Add state for remarks
+  const [remarks, setRemarks] = useState('');
+
+  // On mount or when initial values change, load data
+  useEffect(() => {
+    // If no initial values are provided, attempt to load from localStorage
+    if ((!initialRecord || initialRecord.length === 0) && (!initialRemarks || initialRemarks === '')) {
+      const key = `record-${student.id}-${period}`;
+      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
+      if (storedData[key]) {
+        setSelectedOptions(storedData[key].record || []);
+        setRemarks(storedData[key].remarks || '');
+      }
+    } else {
+      // Use the passed-in initial values
+      setSelectedOptions(initialRecord || []);
+      setRemarks(initialRemarks || '');
+    }
+  }, [initialRecord, initialRemarks, student.id, period]);
 
   const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) => 
-      prev.includes(option) 
-        ? prev.filter(item => item !== option) 
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter(item => item !== option)
         : [...prev, option]
     );
   };
 
   const handleSubmit = () => {
-    onClose(selectedOptions, remarks); // Pass selected options and remarks
+    // Save current selections into localStorage before closing
+    const key = `record-${student.id}-${period}`;
+    const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
+
+    storedData[key] = {
+      record: selectedOptions,
+      remarks: remarks
+    };
+
+    localStorage.setItem('logBookData', JSON.stringify(storedData));
+
+    // Notify parent of changes
+    onClose(selectedOptions, remarks);
   };
 
   return (
@@ -54,8 +83,12 @@ const PeriodDetailModal = ({ student, period, onClose }) => {
         </div>
 
         <div className={buttonStyles['button-group']}>
-          <button onClick={handleSubmit} className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>Submit</button>
-          <button onClick={() => onClose(null)} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>Close</button>
+          <button onClick={handleSubmit} className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>
+            Submit
+          </button>
+          <button onClick={() => onClose(null)} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>
+            Close
+          </button>
         </div>
       </div>
     </div>

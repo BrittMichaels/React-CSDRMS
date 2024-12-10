@@ -29,6 +29,22 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
 
+  // Load from localStorage whenever the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
+      const newMonitoredRecords = {};
+      const newRemarks = {};
+      
+      for (const [key, value] of Object.entries(storedData)) {
+        newMonitoredRecords[key] = value.record;
+        newRemarks[key] = value.remarks;
+      }
+
+      setMonitoredRecords(newMonitoredRecords);
+      setRemarks(newRemarks);
+    }
+  }, [isOpen]);
 
   // Fetch students, school years, grades, and sections on component mount
   useEffect(() => {
@@ -131,18 +147,36 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   const closePeriodModal = (selectedRecord, periodRemarks) => {
     if (selectedRecord) {
       const key = `record-${selectedStudent.id}-${selectedPeriod}`;
-      setMonitoredRecords((prevRecords) => ({
-        ...prevRecords,
+      const updatedMonitoredRecords = {
+        ...monitoredRecords,
         [key]: selectedRecord,
-      }));
-      setRemarks((prevRemarks) => ({
-        ...prevRemarks,
-        [`record-${selectedStudent.id}-${selectedPeriod}`]: periodRemarks,
-      }));
+      };
+
+      const updatedRemarks = {
+        ...remarks,
+        [key]: periodRemarks,
+      };
+
+      setMonitoredRecords(updatedMonitoredRecords);
+      setRemarks(updatedRemarks);
+
+      // Save updates to localStorage
+      saveToLocalStorage(updatedMonitoredRecords, updatedRemarks);
     }
     setIsPeriodModalOpen(false);
     setSelectedStudent(null);
     setSelectedPeriod(null);
+  };
+
+  const saveToLocalStorage = (monitoredRecords, remarks) => {
+    const storedData = {};
+    for (const key of Object.keys(monitoredRecords)) {
+      storedData[key] = {
+        record: monitoredRecords[key],
+        remarks: remarks[key] || ''
+      };
+    }
+    localStorage.setItem('logBookData', JSON.stringify(storedData));
   };
 
   const currentPageStudents = students.slice(
@@ -176,6 +210,8 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
       alert('Records successfully saved!');
       refreshRecords();
       onClose();
+      // Clear localStorage after successful submit if desired
+      localStorage.removeItem('logBookData');
     } catch (error) {
       console.error('Error saving records:', error);
       alert('Failed to save records.');
@@ -183,50 +219,50 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   };
 
   return (
-    <div className={styles['logbook-modal-overlay']}>
+    <div className={styles['logbook-modal-overlay']} style={{ display: isOpen ? 'block' : 'none' }}>
       <div className={styles['logbook-modal-content']}>
         <h2 className={styles.modalTitle}>Add Log Book</h2>
 
         {/* Filter Section */}
         <div className={styles.filterContainer}>
-            <label>School Year:
-              <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
-                {schoolYears.map((year) => (
-                  <option key={year.schoolYear_ID} value={year.schoolYear}>
-                    {year.schoolYear}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <label>School Year:
+            <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
+              {schoolYears.map((year) => (
+                <option key={year.schoolYear_ID} value={year.schoolYear}>
+                  {year.schoolYear}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label>Grade:
-              <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
-                {grades.map((grade) => (
-                  <option key={grade} value={grade}>
-                    {grade}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <label>Grade:
+            <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
+              {grades.map((grade) => (
+                <option key={grade} value={grade}>
+                  {grade}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            <label>Section:
-              <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
-                {sections.map((section) => (
-                  <option key={section} value={section}>
-                    {section.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <label>Section:
+            <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
+              {sections.map((section) => (
+                <option key={section} value={section}>
+                  {section.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </label>
 
-            {/* Date Picker Section */}
-            <label>Record Date:
-              <input 
-                type="date" 
-                value={selectedDate} 
-                onChange={(e) => setSelectedDate(e.target.value)} 
-              />
-            </label>
+          {/* Date Picker Section */}
+          <label>Record Date:
+            <input 
+              type="date" 
+              value={selectedDate} 
+              onChange={(e) => setSelectedDate(e.target.value)} 
+            />
+          </label>
         </div>
 
         <div className={styles['table-container']}>
@@ -258,9 +294,9 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
                         className={styles.clickableCell}
                         onClick={() => handlePeriodClick(student, period + 1)}
                       >
-                        {monitoredRecords[`record-${student.id}-${period + 1}`] || (
-                          <AddCircleIcon style={{ color: '#8A252C' }} />
-                        )}
+                        {monitoredRecords[`record-${student.id}-${period + 1}`] 
+                          ? monitoredRecords[`record-${student.id}-${period + 1}`].join(', ') 
+                          : <AddCircleIcon style={{ color: '#8A252C' }} />}
                       </td>
                     ))}
                   </tr>
@@ -303,8 +339,10 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
         {/* Period Detail Modal */}
         {isPeriodModalOpen && (
           <PeriodDetailModal 
-            student={selectedStudent} 
-            period={selectedPeriod} 
+            student={selectedStudent}
+            period={selectedPeriod}
+            initialRecord={monitoredRecords[`record-${selectedStudent?.id}-${selectedPeriod}`]}
+            initialRemarks={remarks[`record-${selectedStudent?.id}-${selectedPeriod}`]}
             onClose={closePeriodModal} 
           />
         )}
