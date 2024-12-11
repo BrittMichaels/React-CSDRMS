@@ -13,6 +13,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     ...(record.source === 1 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
   ];
 
+  const [selectedSource, setSelectedSource] = useState(record?.source || '');
   const [selectedRecord, setSelectedRecord] = useState(record?.monitored_record || '');
   const [remarks, setRemarks] = useState(record?.remarks || '');
   const [sanction, setSanction] = useState(record?.sanction || '');
@@ -173,6 +174,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     // Prepare the updated record data
     const updatedRecord = {
       ...record,
+      source: selectedSource,  // Include the selected source in the updated record
       monitored_record: selectedRecord,
       remarks: record.complaint === 2 ? null : remarks, // Set remarks to null if it's a case (record type 2)
       sanction: formattedSanction,
@@ -204,6 +206,20 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
       <div className={styles.modal}>
         <h2>{record.source === 2 ? 'Investigate Student Case' : 'Edit Student Record'}</h2>
         <form onSubmit={handleSubmit}>
+          <div className={styles.inputGroup}>
+            <label>Source:</label>
+            <select
+              value={selectedSource === null ? "0" : selectedSource}  
+              onChange={(e) => setSelectedSource(parseInt(e.target.value, 10))}
+              className={styles.select}
+            >
+              <option value="">Select Source</option> 
+              <option value="1">Logbook</option>
+              <option value="2">Complaint</option>
+              <option value="0">N/A</option>
+            </select>
+          </div>
+
           <div className={styles.inputGroup}>
             <label>Monitored Record:</label>
             <select 

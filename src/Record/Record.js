@@ -10,7 +10,7 @@ import AddRecordModal from './AddRecordModal';
 import RecordStudentEditModal from './EditRecordModal';
 import ViewRecordModal from './ViewRecordModal';
 import AddLogBookModal from './AddLogBookModal'; 
-
+import ImportRecordModal from './ImportRecordModal';
 
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
@@ -26,6 +26,7 @@ import Loader from '../Loader';
 
 const Record = () => { 
   const [records, setRecords] = useState([]);
+  const [showImportModal, setShowImportModal] = useState(false); // State for Import Record Modal
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -131,6 +132,8 @@ const Record = () => {
   const openAddLogBookModal = () => setShowAddLogBookModal(true); 
   const closeAddLogBookModal = () => setShowAddLogBookModal(false); 
 
+  const openImportModal = () => setShowImportModal(true); // Open import modal
+  const closeImportModal = () => setShowImportModal(false); // Close import modal
 
   const handleDelete = (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
@@ -146,42 +149,6 @@ const Record = () => {
         });
     }
   };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  // Handle file upload
-  const handleFileUpload = () => {
-    if (!file) {
-      alert('Please select a file first');
-      return;
-    }
-
-    setLoading(true); 
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Sending the file to the backend for import
-    axios
-      .post(`http://localhost:8080/record/import/${loggedInUser.userId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        alert('File uploaded and records imported successfully');
-      })
-      .catch((error) => {
-        console.error('Error importing records:', error);
-        alert('Failed to upload file: ' + error.message);
-      })
-      .finally(() => {
-        setLoading(false); // Hide loading indicator after the upload is complete or fails
-      });
-  };
-
 
   const monitoredRecordsList = [
     'Absent',
@@ -265,29 +232,18 @@ const Record = () => {
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
           {loggedInUser?.userType === 1 && (
           <>
-            <input
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-            id="file-upload"
-            />
-            <label htmlFor="file-upload" className={buttonStyles['action-button']}>
-            <UploadIcon /> Upload Records (Excel)
-            </label>
-
             <button
-            className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
-            onClick={handleFileUpload}
-            >
-            <ImportIcon />Import Records
+              className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+              onClick={openImportModal}
+              >
+              <ImportIcon />Import Records
             </button>
             <button
-                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
-                onClick={openAddLogBookModal}
-              >
-                <AddIcon /> Add Log Book
-              </button>
+              className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+              onClick={openAddLogBookModal}
+            >
+              <AddIcon /> Add Log Book
+            </button>
             </>
           )}
             <button
@@ -400,7 +356,7 @@ const Record = () => {
                         </>
                       )}
                     </td>
-                    <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
+                    <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'N/A'}</td>
                     {/* <td>{record.sanction}</td> */}
                     <td>
                       {record.encoder}
@@ -453,6 +409,14 @@ const Record = () => {
           </button>
         </div>
       </div>
+      {/* Render the ImportRecordModal here */}
+      <ImportRecordModal
+        isOpen={showImportModal}
+        onClose={closeImportModal}
+        refreshRecords={fetchRecords}
+        loggedInUser={loggedInUser}
+      />
+
       {showViewModal && selectedRecord && (
         <ViewRecordModal record={selectedRecord} onClose={closeViewModal} />
       )}
@@ -474,5 +438,4 @@ const Record = () => {
     </div>
   );
 };
-
 export default Record;

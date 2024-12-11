@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './StudentImportModal.module.css'; // Import the updated CSS
+import styles from './ImportStudentModal.module.css'; // Import the updated CSS
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
 import Loader from '../Loader';
 

@@ -557,29 +557,37 @@ const Record = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
-                                        <tr key={grade}>
-                                            {selectedGrade && selectedSection ? null :<td>Grade - {grade}</td>}
-                                            <td>{frequencies ? frequencies.Absent : 0}</td>
-                                            <td>{frequencies ? frequencies.Tardy : 0}</td>
-                                            <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
-                                            <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                            {loggedInUser && loggedInUser.userType !== 2 && (
-                                                <>
-                                                    <td>{frequencies ? frequencies.Offense : 0}</td>
-                                                    <td>{frequencies ? frequencies.Misbehavior : 0}</td>
-                                                </>
-                                            )}
-                                            {loggedInUser && loggedInUser.userType === 2 && (
-                                                <>
-                                                    <td>{(frequencies ? frequencies.Offense : 0) + (frequencies ? frequencies.Misbehavior : 0)}</td>
-                                                </>
-                                            )}                                            
-                                            <td>{frequencies ? frequencies.Clinic : 0}</td>
-                                            <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
-                                            <td>{frequencies ? frequencies.Sanction : 0}</td>
+                                    {filteredFrequencyData && Object.entries(filteredFrequencyData).length === 0 ? (
+                                        <tr>
+                                            <td colSpan={loggedInUser && loggedInUser.userType !== 2 ? 10 : 9} style={{ textAlign: 'center' }}>
+                                                No records found.
+                                            </td>
                                         </tr>
-                                    ))}
+                                    ) : (
+                                        Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
+                                            <tr key={grade}>
+                                                {selectedGrade && selectedSection ? null : <td>Grade - {grade}</td>}
+                                                <td>{frequencies ? frequencies.Absent : 0}</td>
+                                                <td>{frequencies ? frequencies.Tardy : 0}</td>
+                                                <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
+                                                <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
+                                                {loggedInUser && loggedInUser.userType !== 2 && (
+                                                    <>
+                                                        <td>{frequencies ? frequencies.Offense : 0}</td>
+                                                        <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                                    </>
+                                                )}
+                                                {loggedInUser && loggedInUser.userType === 2 && (
+                                                    <>
+                                                        <td>{(frequencies ? frequencies.Offense : 0) + (frequencies ? frequencies.Misbehavior : 0)}</td>
+                                                    </>
+                                                )}
+                                                <td>{frequencies ? frequencies.Clinic : 0}</td>
+                                                <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
+                                                <td>{frequencies ? frequencies.Sanction : 0}</td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>

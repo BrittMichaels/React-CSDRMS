@@ -5,7 +5,7 @@ import navStyles from '../Components/Navigation.module.css'; // Assuming this is
 import buttonStyles from '../GlobalButton.module.css';
 
 import Navigation from '../Components/Navigation';
-import ImportModal from './StudentImportModal'; // Import ImportModal component
+import ImportModal from './ImportStudentModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import EditStudentModal from './EditStudentModal';
 import StudentDetailsModal from './StudentDetailsModal'; // Import the modal
@@ -209,7 +209,7 @@ const StudentList = () => {
                   <ImportIcon />
                   Import Students
                 </button>
-                
+
                 <button
                   onClick={() => setShowAddStudentModal(true)}
                   className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}

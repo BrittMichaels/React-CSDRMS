@@ -16,7 +16,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
   const [complaint, setComplaint] = useState('');
   const [remarks, setRemarks] = useState('');
-  const [source, setSource] = useState(1); // Initialize as null for "Select"
+  const [source, setSource] = useState(''); // Initialize as null for "Select"
   const [complete, setComplete] = useState('');
 
   // State for dynamic student selection
@@ -129,8 +129,10 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
               className={`${formStyles['input']} ${styles['student-modal-select']}`}
               disabled={loggedInUser.userType !== 1}
             >
+              <option value="">Select Source</option> 
               <option value="1">Log Book</option>
               <option value="2">Complaint</option>
+              <option value="0">N/A</option>
             </select>
           </div>
           
