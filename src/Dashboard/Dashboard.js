@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -260,32 +260,91 @@ const Record = () => {
     const handleSectionChange = (e) => setSelectedSection(e.target.value);
 
     // New: Filter studentRecords by selectedGrade and selectedSection
-    const filteredStudentRecords = records
-        .filter(record => 
-            (!selectedGrade || record.student.grade === parseInt(selectedGrade)) && 
-            (!selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase())
-        )
-        .reduce((acc, record) => {
-            const studentName = record.student.name;
-            if (!acc[studentName]) {
-                acc[studentName] = {
-                    Absent: 0,
-                    Tardy: 0,
-                    'Cutting Classes': 0,
-                    'Improper Uniform': 0,
-                    Offense: 0,
-                    Misbehavior: 0,
-                    Clinic: 0,
-                    'Request Permit': 0,
-                    SanctionFrequency: 0,
-                };
-            }
-            acc[studentName][record.monitored_record]++;
-            if (record.sanction) {
-                acc[studentName].SanctionFrequency++;
-            }
-            return acc;
+    const filteredData = useMemo(() => {
+        const filteredRecords = records.filter(record => {
+          const recordDate = new Date(record.record_date);
+          const recordMonth = recordDate.toLocaleString('default', { month: 'long' });
+          const week = Math.ceil(recordDate.getDate() / 7);
+      
+          return (
+            (!selectedGrade || record.student.grade === parseInt(selectedGrade)) &&
+            (!selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase()) &&
+            (!selectedMonth || recordMonth === selectedMonth) &&
+            (!selectedWeek || week === parseInt(selectedWeek))
+          );
+        });
+      
+        const studentCounts = filteredRecords.reduce((acc, record) => {
+          const studentName = record.student.name;
+          if (!acc[studentName]) {
+            acc[studentName] = {
+              Absent: 0,
+              Tardy: 0,
+              'Cutting Classes': 0,
+              'Improper Uniform': 0,
+              Offense: 0,
+              Misbehavior: 0,
+              Clinic: 0,
+              'Request Permit': 0,
+              SanctionFrequency: 0,
+            };
+          }
+          acc[studentName][record.monitored_record]++;
+          if (record.sanction) {
+            acc[studentName].SanctionFrequency++;
+          }
+          return acc;
         }, {});
+      
+        return studentCounts;
+      }, [records, selectedGrade, selectedSection, selectedMonth, selectedWeek]);
+
+        const classOverviewTable = 
+        Object.entries(filteredData).length > 0 ? (
+            Object.entries(filteredData).map(([studentName, counts]) => (
+                <tr key={studentName}>
+                    <td style={{ width: '350px' }}>{studentName}</td>
+                    <td>{counts.Absent}</td>
+                    <td>{counts.Tardy}</td>
+                    <td>{counts['Cutting Classes']}</td>
+                    <td>{counts['Improper Uniform']}</td>
+                    <td>{counts.Offense}</td>
+                    <td>{counts.Misbehavior}</td>
+                    <td>{counts.Clinic}</td>
+                    <td>{counts['Request Permit']}</td>
+                    <td>{counts.SanctionFrequency}</td>
+                </tr>
+            ))
+        ) : (
+            <tr>
+                <td colSpan="10" style={{ textAlign: 'center' }}>
+                    No records found.
+                </td>
+            </tr>
+        )
+        const classOverviewTableByMonth = 
+        Object.entries(filteredData).length > 0 ? (
+            Object.entries(filteredData).map(([studentName, counts]) => (
+                <tr key={studentName}>
+                    <td style={{ width: '350px' }}>{studentName}</td>
+                    <td>{counts.Absent}</td>
+                    <td>{counts.Tardy}</td>
+                    <td>{counts['Cutting Classes']}</td>
+                    <td>{counts['Improper Uniform']}</td>
+                    <td>{counts.Offense}</td>
+                    <td>{counts.Misbehavior}</td>
+                    <td>{counts.Clinic}</td>
+                    <td>{counts['Request Permit']}</td>
+                    <td>{counts.SanctionFrequency}</td>
+                </tr>
+            ))
+        ) : (
+            <tr>
+                <td colSpan="10" style={{ textAlign: 'center' }}>
+                    No records found.
+                </td>
+            </tr>
+        )
 
         const getChartData = () => {
             const labels = selectedMonth
@@ -581,7 +640,7 @@ const Record = () => {
                                                     <>
                                                         <td>{(frequencies ? frequencies.Offense : 0) + (frequencies ? frequencies.Misbehavior : 0)}</td>
                                                     </>
-                                                )}
+                                                )}                                            
                                                 <td>{frequencies ? frequencies.Clinic : 0}</td>
                                                 <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
                                                 <td>{frequencies ? frequencies.Sanction : 0}</td>
@@ -614,28 +673,7 @@ const Record = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Object.entries(filteredStudentRecords).length > 0 ? (
-                                            Object.entries(filteredStudentRecords).map(([studentName, counts]) => (
-                                                <tr key={studentName}>
-                                                    <td style={{ width: '350px' }}>{studentName}</td>
-                                                    <td>{counts.Absent}</td>
-                                                    <td>{counts.Tardy}</td>
-                                                    <td>{counts['Cutting Classes']}</td>
-                                                    <td>{counts['Improper Uniform']}</td>
-                                                    <td>{counts.Offense}</td>
-                                                    <td>{counts.Misbehavior}</td>
-                                                    <td>{counts.Clinic}</td>
-                                                    <td>{counts['Request Permit']}</td>
-                                                    <td>{counts.SanctionFrequency}</td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="10" style={{ textAlign: 'center' }}>
-                                                    No records found.
-                                                </td>
-                                            </tr>
-                                        )}
+                                        {selectedMonth && selectedSection ? <>{classOverviewTableByMonth}</> :<>{classOverviewTable}</>}
                                     </tbody>
                                 </table>
                             </div>
