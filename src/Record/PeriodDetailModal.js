@@ -13,10 +13,9 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [remarks, setRemarks] = useState('');
 
-  // On mount or when initial values change, load data
   useEffect(() => {
-    // If no initial values are provided, attempt to load from localStorage
-    if ((!initialRecord || initialRecord.length === 0) && (!initialRemarks || initialRemarks === '')) {
+    if ((!initialRecord || initialRecord.length === 0) && (!initialRemarks || initialRemarks.trim() === '')) {
+      // Attempt to load from localStorage if no initial data
       const key = `record-${student.id}-${period}`;
       const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
       if (storedData[key]) {
@@ -38,20 +37,33 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
     );
   };
 
+  const isEmpty = selectedOptions.length === 0 && remarks.trim() === '';
+
   const handleSubmit = () => {
-    // Save current selections into localStorage before closing
-    const key = `record-${student.id}-${period}`;
-    const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
+    // If there's data, save it
+    if (!isEmpty) {
+      const key = `record-${student.id}-${period}`;
+      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
 
-    storedData[key] = {
-      record: selectedOptions,
-      remarks: remarks
-    };
+      storedData[key] = {
+        record: selectedOptions,
+        remarks: remarks
+      };
 
-    localStorage.setItem('logBookData', JSON.stringify(storedData));
+      localStorage.setItem('logBookData', JSON.stringify(storedData));
 
-    // Notify parent of changes
-    onClose(selectedOptions, remarks);
+      onClose(selectedOptions, remarks);
+    }
+  };
+
+  const handleClear = () => {
+    // Clear means submit empty data, removing any existing record.
+    onClose(null);
+  };
+
+  const handleClose = () => {
+    // Close without saving any changes.
+    onClose(false);
   };
 
   return (
@@ -71,7 +83,6 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
           ))}
         </div>
 
-        {/* Remarks Input */}
         <div className={styles.remarksContainer}>
           <label htmlFor="remarks">Remarks:</label>
           <textarea
@@ -83,10 +94,26 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
         </div>
 
         <div className={buttonStyles['button-group']}>
-          <button onClick={handleSubmit} className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>
+          <button
+            onClick={handleSubmit}
+            disabled={isEmpty}
+            className={`${buttonStyles['action-button']} ${
+              isEmpty ? buttonStyles['gray-button'] : buttonStyles['green-button']
+            }`}
+          >
             Submit
           </button>
-          <button onClick={() => onClose(null)} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>
+          <button
+            onClick={handleClear}
+            className={`${buttonStyles['action-button']} ${buttonStyles['yellow-button']}`}
+            // Make sure you define a `.yellow-button` class in your CSS, or choose another style
+          >
+            Clear
+          </button>
+          <button
+            onClick={handleClose}
+            className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}
+          >
             Close
           </button>
         </div>

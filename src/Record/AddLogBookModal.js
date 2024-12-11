@@ -145,28 +145,51 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   };
 
   const closePeriodModal = (selectedRecord, periodRemarks) => {
+    const key = `record-${selectedStudent.id}-${selectedPeriod}`;
+  
     if (selectedRecord) {
-      const key = `record-${selectedStudent.id}-${selectedPeriod}`;
-      const updatedMonitoredRecords = {
+      // There's data, update states and local storage
+      setMonitoredRecords((prevRecords) => ({
+        ...prevRecords,
+        [key]: selectedRecord,
+      }));
+      setRemarks((prevRemarks) => ({
+        ...prevRemarks,
+        [key]: periodRemarks,
+      }));
+  
+      saveToLocalStorage({
         ...monitoredRecords,
         [key]: selectedRecord,
-      };
-
-      const updatedRemarks = {
+      }, {
         ...remarks,
         [key]: periodRemarks,
-      };
-
-      setMonitoredRecords(updatedMonitoredRecords);
-      setRemarks(updatedRemarks);
-
-      // Save updates to localStorage
-      saveToLocalStorage(updatedMonitoredRecords, updatedRemarks);
+      });
+    } else {
+      // No data (null), remove any existing entries
+      setMonitoredRecords((prevRecords) => {
+        const updated = { ...prevRecords };
+        delete updated[key];
+        return updated;
+      });
+  
+      setRemarks((prevRemarks) => {
+        const updated = { ...prevRemarks };
+        delete updated[key];
+        return updated;
+      });
+  
+      // Also remove from localStorage
+      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
+      delete storedData[key];
+      localStorage.setItem('logBookData', JSON.stringify(storedData));
     }
+  
     setIsPeriodModalOpen(false);
     setSelectedStudent(null);
     setSelectedPeriod(null);
   };
+  
 
   const saveToLocalStorage = (monitoredRecords, remarks) => {
     const storedData = {};
@@ -178,6 +201,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
     }
     localStorage.setItem('logBookData', JSON.stringify(storedData));
   };
+  
 
   const currentPageStudents = students.slice(
     (currentPage - 1) * studentsPerPage, 
