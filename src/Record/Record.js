@@ -17,7 +17,11 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import ImportIcon from '@mui/icons-material/CloudUpload';
+import UploadIcon from '@mui/icons-material/CloudUpload';
+import ImportIcon from '@mui/icons-material/FileDownload';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 import Loader from '../Loader';
 
 const Record = () => { 
@@ -32,8 +36,9 @@ const Record = () => {
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
   const [searchQuery, setSearchQuery] = useState('');
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); // Current page
+  const recordsPerPage = 50; // Number of items per page
 
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
@@ -64,6 +69,7 @@ const Record = () => {
   }, []);
   
   const fetchRecords = () => {
+    setLoading(true); // Show loading before fetch starts
     let url = '';
     let params = {};
 
@@ -93,9 +99,13 @@ const Record = () => {
         })
         .catch((error) => {
           console.error('Error fetching records:', error);
-        });
+        })
+          .finally(() => {
+            setLoading(false); // Ensure loading is turned off
+          });
     } else {
       console.error('Invalid user type: Unable to fetch records.');
+      setLoading(false); // Ensure loading is turned off even if URL is invalid
     }
   };
 
@@ -185,32 +195,50 @@ const Record = () => {
     'TBD',
   ];
 
+  // Filter the records based on the selected filters
   const filteredRecords = records.filter((record) => {
     const matchesSearch =
       record.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       record.student.sid.toLowerCase().includes(searchQuery.toLowerCase());
-  
+
     // Filter by monitored record type
     const matchesMonitoredRecord =
       monitoredRecordFilter === 'All' || record.monitored_record === monitoredRecordFilter;
-  
+
     if (filterType === 'All') {
       return matchesSearch && matchesMonitoredRecord;
     }
-  
+
     if (filterType === 'Log Book') {
       return record.source === 1 && matchesSearch && matchesMonitoredRecord;
     }
-  
+
     if (filterType === 'Complaint') {
       if (caseStatusFilter === 'Complete') return record.complete === 1 && matchesSearch && matchesMonitoredRecord;
       if (caseStatusFilter === 'Incomplete') return record.complete === 0 && matchesSearch && matchesMonitoredRecord;
       return record.source === 2 && matchesSearch && matchesMonitoredRecord;
     }
-  
+
     return false;
   });
-  
+
+  // Pagination logic: Slice the filtered records based on the current page
+  const totalRecords = filteredRecords.length; // Total number of filtered records
+  const totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+  // Slice the records for the current page
+  const paginatedRecords = filteredRecords.slice(
+    (currentPage - 1) * recordsPerPage,
+    currentPage * recordsPerPage
+  );
+
+  const handlePageChange = (direction) => {
+    if (direction === "prev" && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    } else if (direction === "next" && currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };  
 
   return (
     <div className={navStyles.wrapper}>
@@ -237,30 +265,29 @@ const Record = () => {
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
           {loggedInUser?.userType === 1 && (
           <>
+            <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+            id="file-upload"
+            />
+            <label htmlFor="file-upload" className={buttonStyles['action-button']}>
+            <UploadIcon /> Upload Records (Excel)
+            </label>
+
+            <button
+            className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+            onClick={handleFileUpload}
+            >
+            <ImportIcon />Import Records
+            </button>
             <button
                 className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
                 onClick={openAddLogBookModal}
               >
                 <AddIcon /> Add Log Book
               </button>
-
-                <input
-                type="file"
-                accept=".xlsx,.xls"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-                id="file-upload"
-                />
-                <label htmlFor="file-upload" className={buttonStyles['action-button']}>
-                <ImportIcon /> Import Records (Excel)
-                </label>
-
-                <button
-                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
-                onClick={handleFileUpload}
-                >
-                Upload & Import
-                </button>
             </>
           )}
             <button
@@ -337,8 +364,8 @@ const Record = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredRecords.length > 0 ? (
-                filteredRecords.map((record) => (
+              {paginatedRecords.length > 0 ? (
+                paginatedRecords.map((record) => (
                   <tr key={record.recordId}>
                     <td style={{textAlign: 'left'}}>{record.student.name}</td>
                     <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
@@ -406,6 +433,25 @@ const Record = () => {
             </tbody>
           </table>
         </div>
+        <div className={styles.pagination}>
+          <button
+            className={styles.paginationButton}
+            onClick={() => handlePageChange("prev")}
+            disabled={currentPage === 1}
+          >
+            <ArrowBackIcon />
+          </button>
+          <span className={styles.paginationText}>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className={styles.paginationButton}
+            onClick={() => handlePageChange("next")}
+            disabled={currentPage === totalPages}
+          >
+            <ArrowForwardIcon />
+          </button>
+        </div>
       </div>
       {showViewModal && selectedRecord && (
         <ViewRecordModal record={selectedRecord} onClose={closeViewModal} />
@@ -423,7 +469,7 @@ const Record = () => {
         <AddLogBookModal isOpen={showAddLogBookModal} onClose={closeAddLogBookModal} refreshRecords={fetchRecords}  />
       )}
 
-{loading && <div className={styles.loaderOverlay}><Loader /></div>}
+    {loading && <div className={styles.loaderOverlay}><Loader /></div>}
 
     </div>
   );

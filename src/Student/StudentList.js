@@ -203,19 +203,19 @@ const StudentList = () => {
             {loggedInUser.userType !== 3 && (
               <>
                 <button
-                  onClick={() => setShowAddStudentModal(true)}
-                  className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
-                >
-                  <AddStudentIcon />
-                  Add Student
-                </button>
-
-                <button
                   onClick={() => setShowImportModal(true)}
                   className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
                 >
                   <ImportIcon />
                   Import Students
+                </button>
+                
+                <button
+                  onClick={() => setShowAddStudentModal(true)}
+                  className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+                >
+                  <AddStudentIcon />
+                  Add Student
                 </button>
               </>
             )}
