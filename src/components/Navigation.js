@@ -36,14 +36,26 @@ const Navigation = ({ loggedInUser }) => {
     inactivityTimer = setTimeout(() => handleLogout(), INACTIVITY_TIME_LIMIT);
   };
 
-  const handleLogout = () => {
-    // Clear session data
-    localStorage.removeItem('authToken');
-    sessionStorage.clear();
+  const handleLogout = async () => {  // Use async
+    try {
+      const logoutTime = new Date().toISOString();
+      const response = await axios.get(`http://localhost:8080/time-log/getLatestLog/${userId}`);
+      console.log('Response from API:', response.data);  // Log the response for debugging
+      
+      const { timelog_id: timelogId } = response.data;
 
-    // Navigate to login page
-    navigate('/');
-    alert('You have been logged out due to inactivity.');
+      await axios.post('http://localhost:8080/time-log/logout', {  // Await this as well
+        timelogId,
+        logoutTime,
+      });
+
+      localStorage.removeItem('authToken');
+      sessionStorage.clear();
+      navigate('/');
+      alert('You have been logged out due to inactivity.');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
     <Loader />
   };
 
