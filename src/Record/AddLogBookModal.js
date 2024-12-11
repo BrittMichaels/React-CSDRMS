@@ -245,49 +245,66 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
 
   return (
     <div className={styles['logbook-modal-overlay']}>
-      <div className={styles['logbook-modal-content']}>
+       <div className={styles['logbook-modal-content']}>
+        <button onClick={onClose} className={styles['closeButton']}>
+          ✕
+        </button>
         <h2 className={styles.modalTitle}>Add Log Book</h2>
 
         {/* Filter Section */}
         <div className={styles.filterContainer}>
-          <label>School Year:
-            <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
-              {schoolYears.map((year) => (
-                <option key={year.schoolYear_ID} value={year.schoolYear}>
-                  {year.schoolYear}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div style={{display: 'flex'}}>
+            <label>School Year:
+              <select value={selectedSchoolYear} onChange={(e) => setSelectedSchoolYear(e.target.value)}>
+                {schoolYears.map((year) => (
+                  <option key={year.schoolYear_ID} value={year.schoolYear}>
+                    {year.schoolYear}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>Grade:
-            <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
-              {grades.map((grade) => (
-                <option key={grade} value={grade}>
-                  {grade}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label style={{marginLeft: '10px'}}>Grade:
+              <select value={selectedGrade} onChange={(e) => setSelectedGrade(e.target.value)}>
+                {grades.map((grade) => (
+                  <option key={grade} value={grade}>  
+                    {grade}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <label>Section:
-            <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
-              {sections.map((section) => (
-                <option key={section} value={section}>
-                  {section.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label style={{marginLeft: '10px'}}>Section:
+              <select value={selectedSection} onChange={(e) => setSelectedSection(e.target.value)}>
+                {sections.map((section) => (
+                  <option key={section} value={section}>
+                    {section.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          {/* Date Picker Section */}
-          <label>Record Date:
-            <input 
-              type="date" 
-              value={selectedDate} 
-              onChange={(e) => setSelectedDate(e.target.value)} 
-            />
-          </label>
+            {/* Date Picker Section */}
+            <label style={{marginLeft: '10px'}}>Record Date:
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
+              />
+            </label>
+          </div>
+
+          <div className={styles['submit']} style={{ marginTop: '0' }}>
+            <button
+              onClick={handleSubmit}
+              className={`${buttonStyles['action-button']} ${
+                Object.keys(monitoredRecords).length === 0 ? buttonStyles['gray-button'] : buttonStyles['green-button']
+              }`}
+              disabled={Object.keys(monitoredRecords).length === 0}  // Disable if no records
+            >
+              Submit
+            </button>
+          </div>
         </div>
 
         <div className={styles['table-container']}>
@@ -348,16 +365,6 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
             aria-label="Next Page"
           >
             <ArrowForwardIcon />
-          </button>
-        </div>
-
-        <div className={buttonStyles['button-group']}>
-          <button onClick={handleSubmit} className={`${formStyles.submitBtn} ${buttonStyles['action-button']} ${buttonStyles['green-button']}`}>
-            Submit
-          </button>
-
-          <button onClick={onClose} className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`}>
-            Cancel
           </button>
         </div>
 
