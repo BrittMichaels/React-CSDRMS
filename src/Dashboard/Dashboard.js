@@ -529,15 +529,16 @@ const Record = () => {
                 <div ref={exportRef} className={styles.exportSection}>
                     <div className={navStyles.TitleContainer}>
                         <h2 className={navStyles['h1-title']}>JHS Monitored Records</h2>
-
-                        <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
-                            <button 
-                                id="exportToPDFButton"
-                                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
-                                onClick={handleExportToPDF}>
-                                <ExportIcon /> Export to PDF
-                            </button>
-                        </div>
+                        {loggedInUser.userType === 1 && (
+                            <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
+                                <button 
+                                    id="exportToPDFButton"
+                                    className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
+                                    onClick={handleExportToPDF}>
+                                    <ExportIcon /> Export to PDF
+                                </button>
+                            </div>
+                        )}
                     </div>         
                     <div className={styles.filters}>
                         <div>

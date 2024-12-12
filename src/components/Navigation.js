@@ -23,7 +23,7 @@ const Navigation = ({ loggedInUser }) => {
   const { userId } = loggedInUser;
   const navigate = useNavigate();
   const location = useLocation(); // To get the current URL path
-  
+
   const [unviewedCount, setUnviewedCount] = useState(0); // To store count of unviewed notifications
   const [notifications, setNotifications] = useState([]); // All notifications for display
   const [notificationToggle, setNotificationToggle] = useState(false);
@@ -36,15 +36,15 @@ const Navigation = ({ loggedInUser }) => {
     inactivityTimer = setTimeout(() => handleLogout(), INACTIVITY_TIME_LIMIT);
   };
 
-  const handleLogout = async () => {  // Use async
+  const handleLogout = async () => {
     try {
       const logoutTime = new Date().toISOString();
       const response = await axios.get(`http://localhost:8080/time-log/getLatestLog/${userId}`);
-      console.log('Response from API:', response.data);  // Log the response for debugging
-      
+      console.log('Response from API:', response.data);
+
       const { timelog_id: timelogId } = response.data;
 
-      await axios.post('http://localhost:8080/time-log/logout', {  // Await this as well
+      await axios.post('http://localhost:8080/time-log/logout', {
         timelogId,
         logoutTime,
       });
@@ -56,7 +56,7 @@ const Navigation = ({ loggedInUser }) => {
     } catch (error) {
       console.error('Error logging out:', error);
     }
-    <Loader />
+    <Loader />;
   };
 
   // Attach activity listeners
@@ -75,6 +75,16 @@ const Navigation = ({ loggedInUser }) => {
       });
     };
 
+    // Disable Ctrl+P (Print) event
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        alert('Printing is disabled.');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
     // Start inactivity timer and setup listeners
     resetInactivityTimer();
     setupActivityListeners();
@@ -83,6 +93,7 @@ const Navigation = ({ loggedInUser }) => {
     return () => {
       clearTimeout(inactivityTimer);
       removeActivityListeners();
+      window.removeEventListener('keydown', handleKeyDown); // Remove event listener on cleanup
     };
   }, []);
 
@@ -93,12 +104,9 @@ const Navigation = ({ loggedInUser }) => {
         const notificationsData = response.data;
 
         notificationsData.sort((a, b) => b.userNotificationId - a.userNotificationId);
-        // Filter unviewed notifications and set count
         const unviewedNotifications = notificationsData.filter((notification) => !notification.viewed);
 
         setUnviewedCount(unviewedNotifications.length);
-
-        // Set all notifications for modal display
         setNotifications(notificationsData);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -113,15 +121,13 @@ const Navigation = ({ loggedInUser }) => {
     else setNotificationToggle(true);
   };
 
-  // Handle closing the notification modal
   const handleModalClose = () => {
     setNotificationToggle(false);
   };
 
   const createSidebarLink = (to, text, IconComponent) => {
-    const isActive = location.pathname === to; // Check if the link is active
+    const isActive = location.pathname === to;
 
-    // Set styles for active link
     const linkStyles = `${navStyles['styled-link']} ${isActive ? navStyles.active : ''}`;
 
     return (
@@ -134,12 +140,9 @@ const Navigation = ({ loggedInUser }) => {
 
   return (
     <>
-      {/* Only render the sidenav title and links if the userType is not 5 */}
       {loggedInUser.userType !== 5 && (
         <div className={navStyles.sidenav}>
           <div className={navStyles['sidenav-title']}>MENU</div>
-          {/* Render sidebar links */
-           /* SSO - usertype 1 */}
           {loggedInUser.userType === 1 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/student', 'Student', SchoolIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/StudentList', 'Student List', AssignmentIcon)}
@@ -147,31 +150,26 @@ const Navigation = ({ loggedInUser }) => {
           {loggedInUser.userType === 1 && createSidebarLink('/suspension', 'Suspension', LocalPoliceIcon)}
           {loggedInUser.userType === 1 && createSidebarLink('/activitylog', 'Activity Log', AccessTimeIcon)}
 
-          {/* Principal - usertype 2 */}
           {loggedInUser.userType === 2 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 2 && createSidebarLink('/suspension', 'Suspension', LocalPoliceIcon)}
           {loggedInUser.userType === 2 && createSidebarLink('/record', 'Complaint', PostAddIcon)}
 
-          {/* Adviser - usertype 3 */}
           {loggedInUser.userType === 3 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 3 && createSidebarLink('/student', 'Student', SchoolIcon)}
-          {loggedInUser.userType === 3 && createSidebarLink("/StudentList", "Student List", AssignmentIcon)}
+          {loggedInUser.userType === 3 && createSidebarLink('/StudentList', 'Student List', AssignmentIcon)}
           {loggedInUser.userType === 3 && createSidebarLink('/record', 'Record', PostAddIcon)}
 
-          {/* Admin - usertype 4 */}
           {loggedInUser.userType === 4 && createSidebarLink('/UserManagement', 'Users', AccountBoxIcon)}
           {loggedInUser.userType === 4 && createSidebarLink('/Class', 'Class', SchoolIcon)}
           {loggedInUser.userType === 4 && createSidebarLink('/StudentList', 'Student List', AssignmentIcon)}
           {loggedInUser.userType === 4 && createSidebarLink('/activitylog', 'Activity Log', AccessTimeIcon)}
 
-          {/* Guidance - usertype 6 */}
           {loggedInUser.userType === 6 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
           {loggedInUser.userType === 6 && createSidebarLink('/student', 'Student', SchoolIcon)}
           {loggedInUser.userType === 6 && createSidebarLink('/record', 'Complaint', PostAddIcon)}
         </div>
       )}
 
-      {/* Header */}
       <header className={navStyles.header}>
         <div className={navStyles.JHSheaderContainer}>
           <img src={JHSLogo} alt="JHS Logo" className={navStyles.JHSLogo} />
@@ -179,7 +177,6 @@ const Navigation = ({ loggedInUser }) => {
         </div>
 
         <div className={navStyles['header-wrapper']}>
-          {/* Notification Icon */}
           {loggedInUser?.userType !== 4 && (
             <IconButton onClick={handleToggleNotification}>
               <NotificationsActiveIcon className={navStyles['header-icon']} />
@@ -190,14 +187,13 @@ const Navigation = ({ loggedInUser }) => {
         </div>
       </header>
 
-      {/* Render Notification Modal */}
       {notificationToggle && (
         <NotificationModal
           onClose={handleModalClose}
           notifications={notifications}
           loggedInUser={loggedInUser}
           setNotifications={setNotifications}
-          refreshNotifications={() => setUnviewedCount(0)} // Refresh unviewed count
+          refreshNotifications={() => setUnviewedCount(0)} 
         />
       )}
     </>

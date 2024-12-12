@@ -17,7 +17,6 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import UploadIcon from '@mui/icons-material/CloudUpload';
 import ImportIcon from '@mui/icons-material/FileDownload';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -36,7 +35,6 @@ const Record = () => {
   const [monitoredRecordFilter, setMonitoredRecordFilter] = useState('All');
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
   const [searchQuery, setSearchQuery] = useState('');
-  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const recordsPerPage = 50; // Number of items per page

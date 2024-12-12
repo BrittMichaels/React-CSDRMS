@@ -75,7 +75,7 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
     const marginTop = 20; // Top margin set to 20mm
     const marginLeft = 25.4; // 1 inch left margin in mm
     const marginRight = 25.4; // 1 inch right margin in mm
-    const marginBottom = 25.4; // 1 inch bottom margin in mm
+    // const marginBottom = 25.4; // 1 inch bottom margin in mm
   
     // Letter size dimensions (8.5 x 11 inches), converted to mm
     const pdfWidth = 215.9 - marginLeft - marginRight; // Width adjusted for margins

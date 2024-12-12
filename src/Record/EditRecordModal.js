@@ -237,7 +237,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </select>
           </div>
 
-          {record.source == 2 && (
+          {record.source === 2 && (
             <>
               <div className={styles.inputGroup}>     
                 <label>Complainant:</label>
@@ -257,7 +257,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 />
               </div>
               
-              {loggedInUser.userType == 1 && (
+              {loggedInUser.userType === 1 && (
               <div className={styles.inputGroup}>
                 <label>Investigation Details:</label>
                   <textarea
@@ -269,7 +269,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}
 
-          {record.source == 1 && (
+          {record.source === 1 && (
             <>
               <div className={styles.inputGroup}>                 
                 <label>Remarks:</label>
@@ -296,7 +296,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}          
 
-          {loggedInUser.userType === 1 && record.source == 2 && !isSuspension && (
+          {loggedInUser.userType === 1 && record.source === 2 && !isSuspension && (
             <>
               <div className={styles.inputGroup}>
                 <label>Is the Case Complete?</label>
