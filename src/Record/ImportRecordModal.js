@@ -31,7 +31,21 @@ const ImportRecordModal = ({ isOpen, onClose, refreshRecords, loggedInUser }) =>
         },
       })
       .then((response) => {
-        alert('File uploaded and records imported successfully');
+        const { importedCount, nonExistentStudents, duplicateCount} = response.data; // Expecting structured response
+  
+        let alertMessage = `File uploaded successfully, ${importedCount} records were imported.`;
+
+        if (duplicateCount > 0) {
+          alertMessage += `\n\nWarning: ${duplicateCount} duplicate records were detected and not imported.`;
+        }
+
+        if (nonExistentStudents?.length > 0) {
+          const studentList = nonExistentStudents.join('\n'); // Format the list as a newline-separated string
+          alertMessage += `\n\nThe following students were not found and therefore were not imported:\n${studentList}\n\nIf the following students do exist, please ensure that their names in the records match exactly with those in the student list`;
+        }
+      
+        alert(alertMessage); // Display the alert message
+
         refreshRecords(); // Refresh the records after import
         onClose(); // Close the modal after successful upload
       })
