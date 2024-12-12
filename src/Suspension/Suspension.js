@@ -182,7 +182,7 @@ const Suspensions = () => {
                   {filteredSuspensions.length > 0 ? (
                     filteredSuspensions.map((suspension) => (
                       <tr>
-                        <td style={{ width: '350px' }}>{suspension.record.student.name}</td>  
+                        <td style={{ width: '350px', textAlign: 'left', paddingLeft: '50px' }}>{suspension.record.student.name}</td>  
                         <td>{suspension.record.student.grade} - {suspension.record.student.section}</td>             
                         <td>{suspension.dateSubmitted ? new Date(suspension.dateSubmitted).toLocaleDateString('en-US') : 'N/A'}</td>  
                         <td>{suspension.days} Days</td>

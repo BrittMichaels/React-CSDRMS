@@ -84,6 +84,7 @@ const Student = () => {
     const userTypeTitles = {
       1: 'SSO',
       3: 'Adviser',
+      6: 'Guidance',
     };
   
     const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
@@ -293,14 +294,18 @@ const Student = () => {
             <label style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:"center"}}> Details:
               {selectedStudent && (
                 <div className={formStyles['global-buttonGroup']} style={{marginTop:"0"}}>
-                  <EditNoteIcon 
-                    onClick={() => handleEditStudent(selectedStudent)} 
-                    className={formStyles['action-icon']} 
-                  />
-                  <DeleteIcon 
-                    onClick={() => handleDeleteStudent(selectedStudent.id)} 
-                    className={formStyles['action-icon']}
-                  />
+                  {loggedInUser.userType === 2 && (
+                    <>
+                      <EditNoteIcon 
+                      onClick={() => handleEditStudent(selectedStudent)} 
+                      className={formStyles['action-icon']} 
+                      />
+                      <DeleteIcon 
+                        onClick={() => handleDeleteStudent(selectedStudent.id)} 
+                        className={formStyles['action-icon']}
+                      />
+                    </>
+                  )}
                 </div>
               )}      
             </label>

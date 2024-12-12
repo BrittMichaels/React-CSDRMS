@@ -74,7 +74,7 @@ function App() {
             </>
           )}
 
-          {(loggedInUser && (loggedInUser.userType === 1 || loggedInUser.userType === 3)) && (
+          {(loggedInUser && (loggedInUser.userType === 1 || loggedInUser.userType === 3 || loggedInUser.userType ===  6)) && (
             <>
             <Route path="/student" element={<Student />}  />
             </>

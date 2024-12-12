@@ -5,16 +5,18 @@ import html2canvas from 'html2canvas';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
-    LineElement,
-    PointElement,
+    registerables,
+    ArcElement,
+    CategoryScale,
     LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
     Title,
     Tooltip,
-    Legend,
-    CategoryScale,
-    ArcElement,
-    BarElement,
+    Legend
 } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import styles from '../Dashboard/Dashboard.module.css';
 import navStyles from '../Components/Navigation.module.css'; 
@@ -25,7 +27,20 @@ import buttonStyles from '../GlobalButton.module.css'
 import Loader from '../Loader';
 import ExportIcon from '@mui/icons-material/FileUpload';
 
-ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale, ArcElement, BarElement);
+// Register Chart.js components and plugins
+ChartJS.register(
+    ...registerables,
+    ArcElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ChartDataLabels // Register the DataLabels plugin
+);
 
 const Record = () => {
     const authToken = localStorage.getItem('authToken');
@@ -594,7 +609,7 @@ const Record = () => {
                             <table className={tableStyles['global-table']}>
                                 <thead>
                                     <tr>
-                                        {selectedGrade && selectedSection ? null :<th>Grade</th>}
+                                        {selectedGrade && selectedSection ? null : <th>Grade</th>}
                                         <th>Absent</th>
                                         <th>Tardy</th>
                                         <th>Cutting Classes</th>
@@ -610,42 +625,103 @@ const Record = () => {
                                                 <th>Offense</th> {/* OFFENSE || Policy Violation */}
                                             </>
                                         )}
-                                        <th>Clinic</th> {/*CLINIC*/}
+                                        <th>Clinic</th> {/* CLINIC */}
                                         <th>Request Permit</th>
-                                        <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
+                                        <th>Sanction</th>
+                                        <th style={{ borderRight: '0.5px solid #8A252C' }}>Total</th> {/* New Total Column */}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredFrequencyData && Object.entries(filteredFrequencyData).length === 0 ? (
                                         <tr>
-                                            <td colSpan={loggedInUser && loggedInUser.userType !== 2 ? 10 : 9} style={{ textAlign: 'center' }}>
+                                            <td colSpan={loggedInUser && loggedInUser.userType !== 2 ? 11 : 10} style={{ textAlign: 'center' }}>
                                                 No records found.
                                             </td>
                                         </tr>
                                     ) : (
-                                        Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
-                                            <tr key={grade}>
-                                                {selectedGrade && selectedSection ? null : <td>Grade - {grade}</td>}
-                                                <td>{frequencies ? frequencies.Absent : 0}</td>
-                                                <td>{frequencies ? frequencies.Tardy : 0}</td>
-                                                <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
-                                                <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                                {loggedInUser && loggedInUser.userType !== 2 && (
-                                                    <>
-                                                        <td>{frequencies ? frequencies.Offense : 0}</td>
-                                                        <td>{frequencies ? frequencies.Misbehavior : 0}</td>
-                                                    </>
-                                                )}
-                                                {loggedInUser && loggedInUser.userType === 2 && (
-                                                    <>
-                                                        <td>{(frequencies ? frequencies.Offense : 0) + (frequencies ? frequencies.Misbehavior : 0)}</td>
-                                                    </>
-                                                )}                                            
-                                                <td>{frequencies ? frequencies.Clinic : 0}</td>
-                                                <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
-                                                <td>{frequencies ? frequencies.Sanction : 0}</td>
-                                            </tr>
-                                        ))
+                                        <>
+                                            {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => {
+                                                const rowTotal =
+                                                    (frequencies?.Absent || 0) +
+                                                    (frequencies?.Tardy || 0) +
+                                                    (frequencies?.['Cutting Classes'] || 0) +
+                                                    (frequencies?.['Improper Uniform'] || 0) +
+                                                    (frequencies?.Clinic || 0) +
+                                                    (frequencies?.['Request Permit'] || 0) +
+                                                    (frequencies?.Sanction || 0) +
+                                                    (loggedInUser && loggedInUser.userType !== 2
+                                                        ? (frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0)
+                                                        : (frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0));
+
+                                                return (
+                                                    <tr key={grade}>
+                                                        {selectedGrade && selectedSection ? null : <td>Grade - {grade}</td>}
+                                                        <td>{frequencies?.Absent || 0}</td>
+                                                        <td>{frequencies?.Tardy || 0}</td>
+                                                        <td>{frequencies?.['Cutting Classes'] || 0}</td>
+                                                        <td>{frequencies?.['Improper Uniform'] || 0}</td>
+                                                        {loggedInUser && loggedInUser.userType !== 2 && (
+                                                            <>
+                                                                <td>{frequencies?.Offense || 0}</td>
+                                                                <td>{frequencies?.Misbehavior || 0}</td>
+                                                            </>
+                                                        )}
+                                                        {loggedInUser && loggedInUser.userType === 2 && (
+                                                            <td>{(frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0)}</td>
+                                                        )}
+                                                        <td>{frequencies?.Clinic || 0}</td>
+                                                        <td>{frequencies?.['Request Permit'] || 0}</td>
+                                                        <td>{frequencies?.Sanction || 0}</td>
+                                                        <td style={{ borderLeft: '2px solid #8A252C', fontWeight: 'bold', backgroundColor: '#eee' }}>
+                                                            <b>{rowTotal}</b>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            {/* Total row for all columns */}
+                                            {!selectedGrade && !selectedSection && (
+                                                <tr style={{ borderTop: '2px solid #8A252C', fontWeight: 'bold', backgroundColor: '#eee' }}>
+                                                    <td>Total</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Absent || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Tardy || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Cutting Classes'] || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Improper Uniform'] || 0), 0)}</td>
+                                                    {loggedInUser && loggedInUser.userType !== 2 && (
+                                                        <>
+                                                            <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Offense || 0), 0)}</td>
+                                                            <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Misbehavior || 0), 0)}</td>
+                                                        </>
+                                                    )}
+                                                    {loggedInUser && loggedInUser.userType === 2 && (
+                                                        <td>
+                                                            {Object.values(filteredFrequencyData).reduce(
+                                                                (sum, f) => sum + (f?.Offense || 0) + (f?.Misbehavior || 0),
+                                                                0
+                                                            )}
+                                                        </td>
+                                                    )}
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Clinic || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Request Permit'] || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Sanction || 0), 0)}</td>
+                                                    <td style={{ borderLeft: '2px solid #8A252C', backgroundColor: '#ddd'}}>
+                                                        {Object.values(filteredFrequencyData).reduce((sum, f) => {
+                                                            const rowTotal =
+                                                                (f?.Absent || 0) +
+                                                                (f?.Tardy || 0) +
+                                                                (f?.['Cutting Classes'] || 0) +
+                                                                (f?.['Improper Uniform'] || 0) +
+                                                                (f?.Clinic || 0) +
+                                                                (f?.['Request Permit'] || 0) +
+                                                                (f?.Sanction || 0) +
+                                                                (loggedInUser && loggedInUser.userType !== 2
+                                                                    ? (f?.Offense || 0) + (f?.Misbehavior || 0)
+                                                                    : (f?.Offense || 0) + (f?.Misbehavior || 0));
+                                                            return sum + rowTotal;
+                                                        }, 0)}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </>
                                     )}
                                 </tbody>
                             </table>
@@ -692,8 +768,10 @@ const Record = () => {
                                         plugins: {
                                             legend: { position: 'top' },
                                             title: { display: true, text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)' },
+                                            datalabels: false, // Disable data labels
                                         },
                                     }}
+                                    style={{ width: '100%', height: '100%' }}
                                 />
                             )}
                             {selectedChartType === 'bar' && (
@@ -705,25 +783,43 @@ const Record = () => {
                                         plugins: {
                                             legend: { position: 'top' },
                                             title: { display: true, text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)' },
+                                            datalabels: false, // Disable data labels
                                         },
                                     }}
+                                    style={{ width: '100%', height: '100%' }}
                                 />
                             )}
                             <div className={styles['piechart-Container']}>
                                 {selectedChartType === 'pie' && (
                                     <Pie
-                                    data={getChartPieData()}
-                                    options={{
-                                        responsive: true,
-                                        maintainAspectRatio: false, // This allows the chart to take the container size
-                                        plugins: {
-                                            legend: { position: 'top' },
-                                            title: { display: true, text: 'Monitored Records Distribution' },
-                                        },
-                                    }}
-                                    style={{ width: '75%', height: '75%' }} // Ensure the pie chart takes 100% width and height of the container
+                                        data={getChartPieData()}
+                                        options={{
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: { display: true, text: 'Monitored Records Distribution' },
+                                                datalabels: {
+                                                    formatter: (value, context) => {
+                                                        const total = context.dataset.data.reduce((acc, curr) => acc + curr, 0);
+                                                        const percentage = ((value / total) * 100).toFixed(1);
+                                                        return `${percentage}%`; // Display percentage
+                                                    },
+                                                    color: '#fff',
+                                                    textStrokeColor: '#000', // Simulate shadow effect
+                                                    textStrokeWidth: 2,
+                                                    font: {
+                                                        weight: 'bold',
+                                                    },
+                                                    anchor: 'end', // Position the label outside the pie slice
+                                                    align: 'start',  // Align the label with the edge of the chart
+                                                },
+                                            },
+                                        }}
+                                        style={{ width: '100%', height: '100%' }}
                                     />
-
                                 )}
                             </div>
                         </div>

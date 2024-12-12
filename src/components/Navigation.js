@@ -166,6 +166,7 @@ const Navigation = ({ loggedInUser }) => {
 
           {/* Guidance - usertype 6 */}
           {loggedInUser.userType === 6 && createSidebarLink('/dashboard', 'Dashboard', AssessmentIcon)}
+          {loggedInUser.userType === 6 && createSidebarLink('/student', 'Student', SchoolIcon)}
           {loggedInUser.userType === 6 && createSidebarLink('/record', 'Complaint', PostAddIcon)}
         </div>
       )}

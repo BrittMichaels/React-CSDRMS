@@ -159,7 +159,7 @@ const ActivityLog = () => {
                             {paginatedLogs.length > 0 ? (
                                 paginatedLogs.map((log) => (
                                     <tr key={log.activitylog_id}>
-                                        <td>{log.user.firstname} {log.user.lastname}</td>
+                                        <td style={{textAlign: 'left', paddingLeft: '50px'}}>{log.user.firstname} {log.user.lastname}</td>
                                         <td>{getUserTypeString(log.user.userType)}</td>
                                         <td>{log.action}</td>
                                         <td>{log.description}</td>
