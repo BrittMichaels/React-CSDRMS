@@ -59,7 +59,8 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Time</strong></td>
               <td><strong>:</strong></td>
-              <td>{record.time || 'N/A'}</td>
+              <td>{record.time ? new Date(`1970-01-01T${record.time}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A'}</td>
+
             </tr>
             <tr>
               <td><strong>Monitored Record</strong></td>

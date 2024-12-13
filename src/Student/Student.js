@@ -36,7 +36,8 @@ const Student = () => {
   const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State to control view modal
   const [recordToEdit, setRecordToEdit] = useState(null); // Hold the record to edit
   const [recordToView, setRecordToView] = useState(null); // Hold the record to view
-
+  const [selectedMonitoredRecord, setSelectedMonitoredRecord] = useState(''); 
+  
   const [schoolYears, setSchoolYears] = useState([]); // State for school years
   const [students, setStudents] = useState([]); // State for students
 
@@ -187,7 +188,8 @@ const Student = () => {
     return (
       (!selectedSchoolYear || record.student.schoolYear === selectedSchoolYear) &&
       (!selectedMonth || formattedMonth === selectedMonth) &&
-      (!selectedWeek || recordWeek === parseInt(selectedWeek, 10))
+      (!selectedWeek || recordWeek === parseInt(selectedWeek, 10)) &&
+      (!selectedMonitoredRecord || record.monitored_record === selectedMonitoredRecord) // Filter by monitored record
     );
   });
 
@@ -422,7 +424,8 @@ const Student = () => {
                   setSelectedMonth={setSelectedMonth}
                   selectedWeek={selectedWeek}
                   setSelectedWeek={setSelectedWeek}
-                  showGradeAndSection={false} // Hide grade and section filters
+                  showGradeAndSection={false} 
+                  setSelectedMonitoredRecord={setSelectedMonitoredRecord}
                 />
               )}    
             </div>         
@@ -436,7 +439,7 @@ const Student = () => {
                 >
                   <AddIcon /> Add Record
                 </button>
-              )}
+              )} 
             </div>
                         
             <div className={tableStyles['table-container']}>
