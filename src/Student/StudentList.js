@@ -411,6 +411,7 @@ const StudentList = () => {
         {showStudentDetailsModal && selectedStudent && (
           <StudentDetailsModal
             student={selectedStudent}
+            loggedInUser={loggedInUser} // Pass the loggedInUser
             onClose={() => setShowStudentDetailsModal(false)}
           />
         )}

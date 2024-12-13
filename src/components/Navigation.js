@@ -28,7 +28,7 @@ const Navigation = ({ loggedInUser }) => {
   const [notifications, setNotifications] = useState([]); // All notifications for display
   const [notificationToggle, setNotificationToggle] = useState(false);
 
-  const INACTIVITY_TIME_LIMIT = 10 * 60 * 1000; // 10 minutes
+  const INACTIVITY_TIME_LIMIT = 10 * 30 * 1000; // 5 minutes
   let inactivityTimer;
 
   const resetInactivityTimer = () => {

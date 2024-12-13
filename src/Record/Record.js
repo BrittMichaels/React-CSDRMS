@@ -184,6 +184,10 @@ const Record = () => {
       return record.source === 2 && matchesSearch && matchesMonitoredRecord;
     }
 
+    if (filterType === 'N/A') {
+      return record.source === 0 && matchesSearch && matchesMonitoredRecord; // Assuming "N/A" maps to `source === 0`
+    }
+
     return false;
   });
 
@@ -274,6 +278,7 @@ const Record = () => {
               <option value="All">All Sources</option>
               <option value="Log Book">Log Book</option>
               <option value="Complaint">Complaint</option>
+              <option value="N/A">N/A</option>
             </select>
 
             {filterType === 'Complaint' && (

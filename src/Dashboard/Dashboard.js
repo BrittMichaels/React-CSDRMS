@@ -318,7 +318,7 @@ const Record = () => {
         Object.entries(filteredData).length > 0 ? (
             Object.entries(filteredData).map(([studentName, counts]) => (
                 <tr key={studentName}>
-                    <td style={{ width: '350px' }}>{studentName}</td>
+                    <td style={{ width: '350px', textAlign:'left' }}>{studentName}</td>
                     <td>{counts.Absent}</td>
                     <td>{counts.Tardy}</td>
                     <td>{counts['Cutting Classes']}</td>
