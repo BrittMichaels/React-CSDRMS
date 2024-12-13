@@ -26,8 +26,8 @@
     text-shadow: 3px 3px 5px #000;  /* Slight shadow for text */
     font-weight: 600;
     border: none;
-    word-wrap: break-word; /* Prevent long text like emails from overflowing */
-    overflow-wrap: break-word; /* Ensures wrapping of long text in table cells */
+    /* word-wrap: break-word;  */
+    /* overflow-wrap: break-word; Ensures */
 }
 
 .global-table th, .global-table td {

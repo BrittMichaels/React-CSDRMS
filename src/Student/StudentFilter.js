@@ -77,6 +77,18 @@ const StudentFilter = ({
   return (
     <div className={styles.filterContainer}>
       <label>Filters: 
+        <select
+          value={selectedMonitoredRecord}
+          onChange={(e) => setSelectedMonitoredRecord(e.target.value)}
+        >
+          <option value="">All Monitored Records</option>
+          {monitored_record.map((monitored_record) => (
+            <option key={monitored_record.value} value={monitored_record.value}>
+              {monitored_record.label}
+            </option>
+          ))}
+        </select>
+        
         {loggedInUser?.userType !== 3 && (
           <select
             value={selectedSchoolYear}
@@ -147,17 +159,6 @@ const StudentFilter = ({
           {weeks.map((week) => (
             <option key={week.value} value={week.value}>
               {week.label}
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedMonitoredRecord}
-          onChange={(e) => setSelectedMonitoredRecord(e.target.value)}
-        >
-          <option value="">All Monitored Records</option>
-          {monitored_record.map((monitored_record) => (
-            <option key={monitored_record.value} value={monitored_record.value}>
-              {monitored_record.label}
             </option>
           ))}
         </select>
