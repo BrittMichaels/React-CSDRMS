@@ -91,8 +91,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
               type="text"
               id="sid"
               name="sid"
-              value={formData.sid}
-              onChange={handleChange}
+              value={student.sid}
               placeholder="Student ID"
               readOnly // Make read-only if SID should not be editable
             />
