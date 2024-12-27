@@ -594,11 +594,6 @@ const Record = () => {
                                             ))}
                                         </select>
                                 )}
-                                <select id="chartType" value={selectedChartType} onChange={handleChartTypeChange}>
-                                    <option value="line">Line Chart</option>
-                                    <option value="bar">Bar Chart</option>
-                                    <option value="pie">Pie Chart</option>
-                                </select>
 
                             </label>
                         </div>
@@ -757,7 +752,18 @@ const Record = () => {
                         </>
                     )}
 
-                    <h2 className={styles.RecordTitle}>Analytics Overview</h2>
+                    <h2 className={styles.RecordTitle}>Analytics Overview</h2>  
+                    <div className={styles.filters}>
+                        <div>
+                            <label style={{marginBottom: '0px'}}>Display as3:
+                                <select id="chartType" value={selectedChartType} onChange={handleChartTypeChange}>
+                                    <option value="line">Line Chart</option>
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="pie">Pie Chart</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
                     <div className={styles.chartContainer}> {/* This will apply the centering styles */}
                         <div className={styles['linechart-Container']}>
                              {selectedChartType === 'line' && (
