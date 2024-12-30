@@ -26,6 +26,7 @@ const ViewRecordModal = ({ record, onClose }) => {
 
   if (!record) return null;
 
+  const isSourceType0 = record.source === 0;
   const isSourceType1 = record.source === 1;
   const isSourceType2 = record.source === 2;
 
@@ -68,7 +69,7 @@ const ViewRecordModal = ({ record, onClose }) => {
               <td>{record.monitored_record || 'N/A'}</td>
             </tr>
             {/* Conditionally render fields based on case type */}
-            {isSourceType1 && (
+            {isSourceType1 || isSourceType0 && (
               <tr>
                 <td><strong>Remarks</strong></td>
                 <td><strong>:</strong></td>
