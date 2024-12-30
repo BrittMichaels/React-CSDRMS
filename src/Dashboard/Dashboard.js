@@ -755,7 +755,7 @@ const Record = () => {
                     <h2 className={styles.RecordTitle}>Analytics Overview</h2>  
                     <div className={styles.filters}>
                         <div>
-                            <label style={{marginBottom: '0px'}}>Display as3:
+                            <label style={{marginBottom: '0px'}}>Display as:
                                 <select id="chartType" value={selectedChartType} onChange={handleChartTypeChange}>
                                     <option value="line">Line Chart</option>
                                     <option value="bar">Bar Chart</option>
